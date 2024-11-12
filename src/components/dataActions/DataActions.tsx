@@ -23,7 +23,10 @@ const DataActions = <T, _TValue>({
           <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[160px]">
+      <DropdownMenuContent
+        align="end"
+        className="w-[160px] max-h-60 overflow-auto scrollOverflow"
+      >
         {actions &&
           actions.length > 0 &&
           actions.map((action, index) => (

@@ -9,13 +9,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useDataTable from "@/hooks/useDataTable";
-import { DataTableToolbar } from "@/pages/tasks/components/data-table-toolbar";
-
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-
 }
 
 export function DataTable<TData, TValue>({
@@ -25,7 +22,7 @@ export function DataTable<TData, TValue>({
   const { table } = useDataTable({ data, columns });
 
   return (
-  <>
+    <>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -67,16 +64,15 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center text-red-500"
                 >
-                  No results.
+                  No existen elementos para mostrar
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      {/*    <DataTablePagination table={table} /> */}
     </>
   );
 }

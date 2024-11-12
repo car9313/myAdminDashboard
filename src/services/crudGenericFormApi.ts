@@ -1,56 +1,34 @@
-
 import { axiosInstance } from "@/lib/axios";
+const URL_BASE = "http://localhost:3000";
 
-export interface FetchItemsParams {
-  filters?: {
-    [index: string]: string; // Permitir otros filtros dinámicos
-  };
-  /* page?: number;
-  pageSize?: number; */
-}
-export interface User {
-  
-  settings: { [key: string]: any };
-}
-let user :User={
-  settings : {
-    color: 1,
-    gameStep: 34,
-    gameName: 'Revenge of the Nerds'
-  }
+interface FetchDataOptions<TFilters> {
+  endPoint: string;
+  appliedFilters: TFilters;
 }
 
-//const URL = "http://localhost:3000/items";
-export const getAllFromApi = async <T>(
-  url: string,
-  filters: FetchItemsParams = {}
-): Promise<T[]> => {
-  console.log(url);
-  console.log(filters);
-  /* const queryParams = new URLSearchParams(); */
-  console.log("Consulta con filtros");
-  /* if (filters.name) {
-    queryParams.append("name", filters.name);
-  }
-
-  if (filters.description) {
-    queryParams.append("createdAt", filters.description);
-  } */
-  const response = await axiosInstance.get(`${url}?${filters.toString()}`);
+export const getAllFromApi = async <TData, TFilters>(
+  options: FetchDataOptions<TFilters>
+): Promise<TData[]> => {
+  const { endPoint, appliedFilters } = options;
+  console.log(endPoint);
+  console.log(appliedFilters);
+  const response = await axiosInstance.get<TData[]>(`${URL_BASE}/${endPoint}`, {
+    params: appliedFilters,
+  });
   return response.data;
 };
 
 export const createFromApi = async <T>(url: string, newItem: T): Promise<T> => {
-  const response = await axiosInstance.post(url, newItem);
+  const response = await axiosInstance.post(`${URL_BASE}/${url}`, newItem);
   return response.data;
 };
 export const deleteFromApi = async (url: string, id: string): Promise<void> =>
-  await axiosInstance.delete(`${url}/${id}`);
+  await axiosInstance.delete(`${URL_BASE}/${url}/${id}`);
 
 export const updateFromApi = async <T>(
   url: string,
   id: string,
   itemEdited: T
 ) => {
-  await axiosInstance.put(`${url}/${id}`, itemEdited);
+  await axiosInstance.put(`${URL_BASE}/${url}/${id}`, itemEdited);
 };
