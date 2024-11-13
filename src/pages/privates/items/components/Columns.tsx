@@ -2,6 +2,7 @@ import { Item } from "../models/item";
 import { ColumnDef } from "@tanstack/react-table";
 import DataActions from "@/components/dataActions/DataActions";
 import { Action } from "@/interfaces/action";
+import { ColDef } from "../data/dataDef";
 
 interface ItemColumnsProps<Item> {
   actions?: Action<Item>[];
@@ -12,11 +13,11 @@ export const createItemColumns = ({
 }: ItemColumnsProps<Item>): ColumnDef<Item>[] => {
   const columns: ColumnDef<Item>[] = [
     {
-      header: "Name",
+      header: ColDef.name,
       accessorKey: "name",
     },
     {
-      header: "Description",
+      header: ColDef.description,
       accessorKey: "description",
     },
   ];

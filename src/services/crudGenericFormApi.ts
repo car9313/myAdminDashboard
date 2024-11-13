@@ -10,11 +10,10 @@ export const getAllFromApi = async <TData, TFilters>(
   options: FetchDataOptions<TFilters>
 ): Promise<TData[]> => {
   const { endPoint, appliedFilters } = options;
-  console.log(endPoint);
-  console.log(appliedFilters);
   const response = await axiosInstance.get<TData[]>(`${URL_BASE}/${endPoint}`, {
     params: appliedFilters,
   });
+  console.log(response)
   return response.data;
 };
 

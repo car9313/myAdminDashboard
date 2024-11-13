@@ -6,7 +6,6 @@ import { ItemFormSchema } from "./schemas/itemSchema";
 import { Action } from "@/interfaces/action";
 import { Button } from "@/components/custom/button";
 import ViewToggle from "@/components/viewToggle/ViewToggle";
-import CardItem from "./components/CardItem";
 import WindowsModal from "@/components/modal/WindowsModal";
 import CrudForm from "./components/CrudForm";
 import useManagerModalDatatable from "@/hooks/useManagerModalDatatable";
@@ -15,15 +14,18 @@ import useCrudQueryActions from "@/hooks/useCrudQueryActions";
 import useGetActionCrud from "@/hooks/useGetActionCrud";
 import { useState } from "react";
 import FilterForm from "./components/FilterForm";
-import ViewData from "./components/ViewData";
 import DataTableSkeleton from "@/components/dataTable/DataTableSkeleton";
+import { ColDef } from "./data/dataDef";
+
+import CardViewContent from "@/components/CardView/CardViewContent";
+import ListCardView from "@/components/CardView/ListCardView";
 
 interface Filters {
   name?: string;
   description?: string;
-  dateRange?: { start: null, end: null },
-  status?: '',
-  categories?: [],
+  dateRange?: { start: null; end: null };
+  status?: "";
+  categories?: [];
 }
 
 const Items = () => {
@@ -31,18 +33,19 @@ const Items = () => {
   const {
     isModalOpen,
     currentItem,
-    currentView,
     modalMode,
     handleOpenModal,
     handleCloseModal,
-    handleViewChange,
     title,
   } = useManagerModalDatatable<Item>();
+  const [currentView, setCurrentView] = useState<boolean>(false); // Estado para la vista seleccionada
   const { data: items = [], isLoading } = UseGetAllFromApi<Item, Filters>({
     ...dataApi,
     appliedFilters,
   });
-
+  const handleViewChange = () => {
+    setCurrentView(!currentView);
+  };
   const handleApplyFilters = (filters: Filters) => {
     setAppliedFilters(filters);
   };
@@ -75,10 +78,6 @@ const Items = () => {
   const columns = createItemColumns({
     actions: additionalActions,
   });
-  (function getKeysWithArrayObjects () {
-    const itemsKeys = Object.keys(items)
-    console.log(itemsKeys)
-  })()
 
   return (
     <div className="container mx-auto p-4">
@@ -103,11 +102,12 @@ const Items = () => {
             <DataTable data={items} columns={columns} />
           )
         ) : items.length > 0 ? (
-          <div className="faded-bottom no-scrollbar grid gap-4 overflow-auto pb-16 pt-4 md:grid-cols-2 lg:grid-cols-3">
-            {items.map((item) => (
-              <CardItem itemSelected={item} actions={additionalActions} />
-            ))}
-          </div>
+          <ListCardView<Item>
+            data={items}
+            columnsDef={ColDef}
+            className={"hover:shadow-md"}
+            actions={additionalActions}
+          />
         ) : (
           <p className="text-center text-red-500">
             No existen elementos para mostrar
@@ -120,7 +120,13 @@ const Items = () => {
         title={title}
       >
         {modalMode === "view" ? (
-          <ViewData currentItem={currentItem} />
+          currentItem && (
+            <CardViewContent<Item>
+              key={currentItem.id}
+              data={currentItem}
+              columnsDef={ColDef}
+            />
+          )
         ) : (
           <CrudForm
             modalMode={modalMode}

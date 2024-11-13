@@ -1,0 +1,16 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "address": {
+              "street": "123 Main St",
+              "city": "Anytown",
+              "zip": "12345"
+            },
+            "hobbies": ["Reading", "Traveling", "Cooking"],
+            "createdAt": "13/11/2024"
+          }
+    ]
+}

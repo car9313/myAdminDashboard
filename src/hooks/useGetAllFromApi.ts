@@ -23,11 +23,12 @@ const UseGetAllFromApi = <TData, TFilters>({
   endPoint,
   appliedFilters,
 }: UseManagementDataAndModalProps<TFilters>): UseManagementDataAndModalReturn<TData> => {
-  console.log(appliedFilters);
-  console.log(key);
+  
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: [key, appliedFilters],
     queryFn: () => getAllFromApi<TData, TFilters>({ endPoint, appliedFilters }),
+    staleTime: 1000 * 60 * 5, // Los datos son frescos durante 5 minutos
+    refetchOnWindowFocus: false, // No recargar al enfocar la ventana
   });
   return {
     data,
