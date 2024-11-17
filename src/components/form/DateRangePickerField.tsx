@@ -12,20 +12,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
 import {
   useController,
   FieldValues,
   UseControllerProps,
 } from "react-hook-form";
-import {
-  startOfToday,
-  endOfToday,
-  startOfWeek,
-  endOfWeek,
-  startOfMonth,
-  endOfMonth,
-} from "date-fns";
+import { startOfMonth, endOfMonth } from "date-fns";
 import { cn } from "@/lib/utils";
 interface DateRange {
   from: Date | null;
@@ -42,25 +35,27 @@ const DateRangePickerField = <T extends FieldValues>({
   ...controllerProps
 }: DateRangePickerFieldProps<T>) => {
   const { field } = useController(controllerProps);
+  // Opciones de fecha relativa
+  const relativeDateOptions = [
+    { label: "Hoy", range: { from: new Date(), to: new Date() } },
+    {
+      label: "Últimos 7 días",
+      range: { from: subDays(new Date(), 7), to: new Date() },
+    },
+    {
+      label: "Este mes",
+      range: { from: startOfMonth(new Date()), to: endOfMonth(new Date()) },
+    },
+    {
+      label: "Últimos 30 días",
+      range: { from: subDays(new Date(), 30), to: new Date() },
+    },
+  ];
 
-  const setToday = () => {
-    field.onChange("rangeDate", { from: startOfToday(), to: endOfToday() });
+  // Manejador de selección de fecha relativa
+  const handleRelativeDateSelect = (range: DateRange) => {
+    field.onChange(range);
   };
-
-  const setThisWeek = () => {
-    field.onChange("rangeDate", {
-      from: startOfWeek(new Date()),
-      to: endOfWeek(new Date()),
-    });
-  };
-
-  const setThisMonth = () => {
-    field.onChange("rangeDate", {
-      from: startOfMonth(new Date()),
-      to: endOfMonth(new Date()),
-    });
-  };
-
   const formatDateRange = (range: DateRange) => {
     if (range.from && range.to) {
       return `${format(range.from, "LLL dd, y")} - ${format(range.to, "LLL dd, y")}`;
@@ -95,15 +90,15 @@ const DateRangePickerField = <T extends FieldValues>({
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
           <div className="flex flex-col md:flex-row justify-center items-center gap-1 p-2">
-            <Button variant="outline" onClick={setToday}>
-              Hoy
-            </Button>
-            <Button variant="outline" onClick={setThisWeek}>
-              Esta semana
-            </Button>
-            <Button variant="outline" onClick={setThisMonth}>
-              Este mes
-            </Button>
+            {relativeDateOptions.map((option) => (
+              <Button
+                key={option.label}
+                variant="outline"
+                onClick={() => handleRelativeDateSelect(option.range)}
+              >
+                {option.label}
+              </Button>
+            ))}
           </div>
           <Calendar
             mode="range"

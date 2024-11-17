@@ -8,7 +8,7 @@ interface ViewToggleProps {
 
 const ViewToggle = ({ onViewChange }: ViewToggleProps) => {
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center justify-end space-x-2">
       <Switch onCheckedChange={onViewChange} />
       <Label htmlFor="airplane-mode">Card Mode</Label>
     </div>

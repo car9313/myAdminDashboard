@@ -14,8 +14,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/custom/button";
-import { PasswordInput } from "@/components/custom/password-input";
 import { cn } from "@/lib/utils";
+import { PasswordInput } from "@/components/form/password-input";
+import { useAuth } from "@/context/uthContext";
+import useCrudQueryActions from "@/hooks/useCrudQueryActions";
 /* import useAuth from "@/hooks/useAuth";
 import { loginServicePrueba } from "@/services/auth";
  */ /* import { loginService, loginServicePrueba } from '@/utility/services/auth'
@@ -23,7 +25,7 @@ import { useQueryLogin } from '@/utility/hooks/react-query/useQuerysAuth' */
 
 interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> {}
 
-const formSchema = z.object({
+const loginformSchema = z.object({
   username: z.string().min(1, { message: "Please enter your email" }),
 
   password: z
@@ -35,21 +37,27 @@ const formSchema = z.object({
       message: "Password must be at least 7 characters long",
     }),
 });
-
+export type loginFormSchemaType = z.infer<typeof loginformSchema>;
 export function SignInForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   // const { createSession } = useAuth();
-  const navigate = useNavigate();
+  const { login } = useAuth();
   /*  const { mutateAsync: loginService, isLoading } = useQueryLogin() */
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<loginFormSchemaType>({
+    resolver: zodResolver(loginformSchema),
     defaultValues: {
       username: "",
       password: "",
     },
   });
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  const { mutationCreate } = useCrudQueryActions({
+    key: "auth",
+    endPoint: "auth",
+  });
+
+  async function onSubmit(data: loginFormSchemaType) {
+    mutationCreate.mutate(data);
     /* 
     setIsLoading(true);
     try {

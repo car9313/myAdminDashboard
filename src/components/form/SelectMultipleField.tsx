@@ -31,18 +31,31 @@ interface LanguageOption {
   value: string;
 }
 
-interface LanguageSelectFieldProps<T extends FieldValues>
+interface MultiSelectFieldProps<T extends FieldValues>
   extends UseControllerProps<T> {
   label: string;
   options: LanguageOption[];
 }
 
-const SelectField = <T extends FieldValues>({
+const MultiSelectField = <T extends FieldValues>({
   label,
   options,
   ...controllerProps
-}: LanguageSelectFieldProps<T>) => {
+}: MultiSelectFieldProps<T>) => {
   const { field } = useController(controllerProps);
+
+  // Ensure field.value is an array to handle multiple selections
+  const selectedValues: string[] = Array.isArray(field.value)
+    ? field.value
+    : [];
+
+  const toggleOption = (value: string) => {
+    if (selectedValues.includes(value)) {
+      field.onChange(selectedValues.filter((item) => item !== value));
+    } else {
+      field.onChange([...selectedValues, value]);
+    }
+  };
 
   return (
     <FormItem>
@@ -55,33 +68,36 @@ const SelectField = <T extends FieldValues>({
               role="combobox"
               className={cn(
                 "w-full justify-between",
-                !field.value && "text-muted-foreground"
+                !selectedValues.length && "text-muted-foreground"
               )}
             >
-              {field.value
-                ? options.find((option) => option.value === field.value)?.label
-                : "Select language"}
+              {selectedValues.length
+                ? options
+                    .filter((option) => selectedValues.includes(option.value))
+                    .map((option) => option.label)
+                    .join(", ")
+                : "Select languages"}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </FormControl>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0">
           <Command>
-            <CommandInput placeholder="Search language..." />
+            <CommandInput placeholder="Search languages..." />
             <CommandList>
               <CommandEmpty>No language found.</CommandEmpty>
               <CommandGroup>
                 {options.map((option) => (
                   <CommandItem
                     key={option.value}
-                    onSelect={() => field.onChange(option.value)}
+                    onSelect={() => toggleOption(option.value)}
                     className="cursor-pointer"
                   >
                     {option.label}
                     <Check
                       className={cn(
                         "ml-auto h-4 w-4",
-                        option.value === field.value
+                        selectedValues.includes(option.value)
                           ? "opacity-100"
                           : "opacity-0"
                       )}
@@ -98,4 +114,4 @@ const SelectField = <T extends FieldValues>({
   );
 };
 
-export default SelectField;
+export default MultiSelectField;

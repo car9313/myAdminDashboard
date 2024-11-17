@@ -1,3 +1,4 @@
-export interface ColDefType{
-    [key:string]:string
+export interface DefCardViewKeyType {
+  header: string;
+  value: string;
 }

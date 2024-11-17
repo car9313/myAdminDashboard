@@ -13,7 +13,8 @@ export const createItemColumns = ({
 }: ItemColumnsProps<Item>): ColumnDef<Item>[] => {
   const columns: ColumnDef<Item>[] = [
     {
-      header: ColDef.name,
+      id: "name",
+      header: "Nombre",
       accessorKey: "name",
     },
     {
