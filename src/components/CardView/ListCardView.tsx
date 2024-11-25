@@ -19,6 +19,7 @@ const ListCardView = <T,>({
   actions,
 }: CardViewProps<T>) => {
   const defCardViewKey: DefCardViewKeyType[] = getDefCardViewKey(columnsDef);
+  console.log(defCardViewKey);
   return (
     <div className="faded-bottom no-scrollbar grid gap-4 overflow-auto pb-16 pt-4 md:grid-cols-2 lg:grid-cols-3">
       {data.length > 0 ? (

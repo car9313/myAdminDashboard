@@ -19,9 +19,9 @@ import CategoryCheckboxField from "@/components/form/CategoryCheckboxField";
 import BooleanSwitchField from "@/components/form/BooleanSwitchField";
 import AdvancedTextSearchField from "@/components/form/AdvancedTextSearchField";
 import TagInputField from "@/components/form/TagInputField";
-import RelationFilterField from "@/components/form/RelationFilterField";
 import SelectField from "@/components/form/SelectField";
 import { Filters } from "../models/filters";
+import DependentSelectField from "@/components/form/DependentSelectField";
 
 const languageOptions = [
   { label: "English", value: "en" },
@@ -32,18 +32,39 @@ const languageOptions = [
   { label: "Russian", value: "ru" },
 ];
 
-const categoryOptions = [
+/* const categoryOptions = [
   { label: "Technology", value: "technology" },
   { label: "Health", value: "health" },
   { label: "Finance", value: "finance" },
-];
-const relatedOptions = [
+]; */
+/* const relatedOptions = [
   { label: "Categoría 1", value: "cat1" },
   { label: "Categoría 2", value: "cat2" },
   { label: "Categoría 3", value: "cat3" },
   // Agrega más opciones según sea necesario
 ];
+ */
+// Opciones de ejemplo
+const categoryOptions = [
+  { label: "Categoría 1", value: "cat1" },
+  { label: "Categoría 2", value: "cat2" },
+  { label: "Categoría 3", value: "cat3" },
+];
 
+const productOptions = {
+  cat1: [
+    { label: "Producto 1A", value: "prod1a" },
+    { label: "Producto 1B", value: "prod1b" },
+  ],
+  cat2: [
+    { label: "Producto 2A", value: "prod2a" },
+    { label: "Producto 2B", value: "prod2b" },
+  ],
+  cat3: [
+    { label: "Producto 3A", value: "prod3a" },
+    { label: "Producto 3B", value: "prod3b" },
+  ],
+};
 interface FilterFormProps {
   onApplyFilters: (filters: Filters) => void;
   onClearFilters: () => void;
@@ -64,10 +85,11 @@ const FilterForm = ({ onApplyFilters, onClearFilters }: FilterFormProps) => {
       advancedSearch: "", // Valor por defecto
       keywords: [], // Valor por defecto
       relatedItems: [],
+      category: "",
+      product: "",
     },
   });
   const onSubmit: SubmitHandler<Filters> = (data) => {
-    console.log(data);
     onApplyFilters(data);
   };
   const handleClear = () => {
@@ -165,13 +187,20 @@ const FilterForm = ({ onApplyFilters, onClearFilters }: FilterFormProps) => {
                   placeholder="Añadir palabras clave"
                   control={form.control}
                 />
-                <RelationFilterField
-                  name="relatedItems"
-                  label="Elementos Relacionados"
-                  options={relatedOptions}
+                {/*  <DependentSelectField
+                  name="category"
+                  label="Categoría"
+                  options={categoryOptions}
+                  dependentOptions={productOptions}
                   control={form.control}
-                  multiple={true} // Cambia a false si solo quieres selección única
                 />
+                <DependentSelectField
+                  name="product"
+                  label="Producto"
+                  options={[]}
+                  dependentOptions={productOptions}
+                  control={form.control}
+                /> */}
               </div>
               {hasActiveFilters && (
                 <div className="flex justify-end gap-4">

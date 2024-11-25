@@ -2,31 +2,32 @@ import { Item } from "../models/item";
 import { ColumnDef } from "@tanstack/react-table";
 import DataActions from "@/components/dataActions/DataActions";
 import { Action } from "@/interfaces/action";
-import { ColDef } from "../data/dataDef";
+import { getDefCardViewKey } from "@/utils/utilities";
+import { DefCardViewKeyType } from "@/interfaces/colDef";
 
 interface ItemColumnsProps<Item> {
   actions?: Action<Item>[];
 }
+const columns: ColumnDef<Item>[] = [
+  {
+    id: "name",
+    header: "Name",
+    accessorKey: "name",
+  },
+  {
+    id: "description",
+    header: "Description",
+    accessorKey: "description",
+  },
+];
 
 export const createItemColumns = ({
   actions,
 }: ItemColumnsProps<Item>): ColumnDef<Item>[] => {
-  const columns: ColumnDef<Item>[] = [
-    {
-      id: "name",
-      header: "Nombre",
-      accessorKey: "name",
-    },
-    {
-      header: ColDef.description,
-      accessorKey: "description",
-    },
-  ];
   const columnsEdited: ColumnDef<Item>[] = actions
     ? [
         ...columns,
         {
-          id: "actions",
           header: "Acciones",
           enableHiding: false,
           cell: ({ row }) => (
@@ -38,3 +39,4 @@ export const createItemColumns = ({
     : columns;
   return columnsEdited;
 };
+export const defCardViewKey: DefCardViewKeyType[] = getDefCardViewKey(columns);

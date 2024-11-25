@@ -3,7 +3,7 @@ const URL_BASE = "http://localhost:3000";
 
 interface FetchDataOptions<TFilters> {
   endPoint: string;
-  appliedFilters: TFilters;
+  appliedFilters?: TFilters;
 }
 
 export const getAllFromApi = async <TData, TFilters>(
@@ -11,9 +11,20 @@ export const getAllFromApi = async <TData, TFilters>(
 ): Promise<TData[]> => {
   const { endPoint, appliedFilters } = options;
   const response = await axiosInstance.get<TData[]>(`${URL_BASE}/${endPoint}`, {
-    params: appliedFilters,
+    params: appliedFilters ? appliedFilters : null,
   });
-  console.log(response)
+  console.log(response.data);
+  return response.data;
+};
+export const getItemID = async <TData>({
+  id,
+  endPoint,
+}: {
+  id: string | undefined;
+  endPoint: string;
+}): Promise<TData> => {
+  if (!id) throw new Error("ID indefinido");
+  const response = await axiosInstance.get<TData>(`${URL_BASE}/${endPoint}`);
   return response.data;
 };
 

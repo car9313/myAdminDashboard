@@ -16,14 +16,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/custom/button";
 import { cn } from "@/lib/utils";
 import { PasswordInput } from "@/components/form/password-input";
-import { useAuth } from "@/context/uthContext";
+import { useAuth } from "@/context/authContext";
 import useCrudQueryActions from "@/hooks/useCrudQueryActions";
-/* import useAuth from "@/hooks/useAuth";
-import { loginServicePrueba } from "@/services/auth";
- */ /* import { loginService, loginServicePrueba } from '@/utility/services/auth'
-import { useQueryLogin } from '@/utility/hooks/react-query/useQuerysAuth' */
 
 interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> {}
+interface LoginFormData {
+  username: string;
+  password: string;
+}
 
 const loginformSchema = z.object({
   username: z.string().min(1, { message: "Please enter your email" }),
@@ -39,10 +39,8 @@ const loginformSchema = z.object({
 });
 export type loginFormSchemaType = z.infer<typeof loginformSchema>;
 export function SignInForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  // const { createSession } = useAuth();
   const { login } = useAuth();
-  /*  const { mutateAsync: loginService, isLoading } = useQueryLogin() */
+  const navigate = useNavigate();
   const form = useForm<loginFormSchemaType>({
     resolver: zodResolver(loginformSchema),
     defaultValues: {
@@ -51,44 +49,9 @@ export function SignInForm({ className, ...props }: UserAuthFormProps) {
     },
   });
 
-  const { mutationCreate } = useCrudQueryActions({
-    key: "auth",
-    endPoint: "auth",
-  });
-
   async function onSubmit(data: loginFormSchemaType) {
-    mutationCreate.mutate(data);
-    /* 
-    setIsLoading(true);
-    try {
-      const userSession = loginServicePrueba(data);
-      if (!userSession) throw new Error("Usuario igual a null");
-      if (
-        userSession.user &&
-        userSession.accessToken &&
-        userSession.refreshAccessToken &&
-        userSession.roles
-      ) {
-        createSession(
-          userSession.user,
-          userSession.accessToken,
-          userSession.refreshAccessToken,
-          userSession.roles
-        );
-      } else {
-        throw new Error(
-          "Error valores nulos no permitidos en la session de usuario"
-        );
-      }
-      // Redirigir al dashboard después de iniciar sesión
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
- */
+    login(data);
+    navigate("/");
   }
   return (
     <div className={cn("grid gap-6", className)} {...props}>
@@ -129,9 +92,7 @@ export function SignInForm({ className, ...props }: UserAuthFormProps) {
                 </FormItem>
               )}
             />
-            <Button className="mt-2" loading={isLoading}>
-              Login
-            </Button>
+            <Button className="mt-2" /* loading={isLoading} */>Login</Button>
             {/* 
             <div className='relative my-2'>
               <div className='absolute inset-0 flex items-center'>

@@ -5,7 +5,7 @@ interface UseFilterDataReturnProps<T> {
   handleApplyFilters: (filters: T | {}) => void;
   handleClearFilters: () => void;
 }
-const useFilterData = <T extends object>(): UseFilterDataReturnProps<T> => {
+const useFilterData = <T>(): UseFilterDataReturnProps<T> => {
   const [appliedFilters, setAppliedFilters] = useState<T | {}>({});
   const handleApplyFilters = (filters: T | {}) => {
     setAppliedFilters(filters);

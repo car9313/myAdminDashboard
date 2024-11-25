@@ -15,4 +15,6 @@ export interface Filters {
     label: string;
     value: string;
   }[];
+  category: string;
+  product: string;
 }

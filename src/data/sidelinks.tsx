@@ -29,7 +29,12 @@ export const sidelinks: SideLink[] = [
     href: "/items",
     icon: <IconChecklist size={18} />,
   },
-
+  {
+    title: "ItemsSPA",
+    label: "",
+    href: "/itemsSPA",
+    icon: <IconChecklist size={18} />,
+  },
   {
     title: "Settings",
     label: "",

@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "../../sidebar/Sidebar";
 import Navbar from "@/components/navbar/Navbar";
 import { LayoutProvider } from "./context/LayoutContext";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function LayoutDashboard() {
   return (
@@ -21,6 +22,7 @@ export default function LayoutDashboard() {
             <Outlet />
           </LayoutProvider.Body>
         </LayoutProvider>
+        <Toaster />
       </main>
     </div>
   );

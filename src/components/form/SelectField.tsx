@@ -17,6 +17,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -89,6 +90,21 @@ const SelectField = <T extends FieldValues>({
                   </CommandItem>
                 ))}
               </CommandGroup>
+              {field.value && (
+                <>
+                  <CommandSeparator />
+                  <CommandGroup>
+                    <CommandItem
+                      onSelect={() => {
+                        field.onChange(null);
+                      }}
+                      className="justify-center text-center"
+                    >
+                      Clear filters
+                    </CommandItem>
+                  </CommandGroup>
+                </>
+              )}
             </CommandList>
           </Command>
         </PopoverContent>

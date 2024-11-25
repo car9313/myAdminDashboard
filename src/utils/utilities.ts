@@ -1,5 +1,6 @@
+import { Permission } from "@/interfaces/auth";
 import { ColumnDef } from "@tanstack/react-table";
-
+import { jwtDecode } from "jwt-decode";
 // Función auxiliar para obtener propiedades de manera segura
 export const getProperty = <T, K extends keyof T>(obj: T, key: K): T[K] => {
   return obj[key];
@@ -19,10 +20,30 @@ export const formatValue = (value: any): string => {
   return String(value); // Formateo genérico
 };
 export const getDefCardViewKey = <T>(columnsDef: ColumnDef<T>[]) => {
-  return Object.values(columnsDef).map((key) => {
-    return {
-      header: key.header as string,
-      value: key.id as string,
-    };
-  });
+  return columnsDef
+    .filter((key) => key.id)
+    .map((key) => {
+      return {
+        header: key.header as string,
+        value: key.id as string,
+      };
+    });
+};
+export const isTokenExpired = (token: string): boolean => {
+  try {
+    const decoded: { exp: number } = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
+    return decoded.exp < currentTime;
+  } catch {
+    return true;
+  }
+};
+
+//Extraer acciones de los permisos de un recurso específico
+const getActionsForResource = (
+  permissions: Permission[],
+  resource: string
+): string[] => {
+  const permission = permissions.find((perm) => perm.resource === resource);
+  return permission ? permission.actions : [];
 };

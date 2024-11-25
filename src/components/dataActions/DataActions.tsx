@@ -8,10 +8,7 @@ import {
 import { DataActionsProps } from "@/interfaces/action";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 
-const DataActions = <T, _TValue>({
-  itemSelected,
-  actions,
-}: DataActionsProps<T>) => {
+const DataActions = <T,>({ itemSelected, actions }: DataActionsProps<T>) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

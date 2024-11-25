@@ -42,6 +42,7 @@
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.13",
     "json-server": "^1.0.0-beta.3",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.453.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
@@ -52,7 +53,8 @@
     "recharts": "^2.13.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",

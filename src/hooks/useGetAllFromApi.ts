@@ -7,7 +7,7 @@ import {
 interface UseManagementDataAndModalProps<TFilters> {
   key: string;
   endPoint: string;
-  appliedFilters: TFilters;
+  appliedFilters?: TFilters;
 }
 interface UseManagementDataAndModalReturn<T> {
   data: T[] | undefined;
@@ -23,10 +23,10 @@ const UseGetAllFromApi = <TData, TFilters>({
   endPoint,
   appliedFilters,
 }: UseManagementDataAndModalProps<TFilters>): UseManagementDataAndModalReturn<TData> => {
-  
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: [key, appliedFilters],
-    queryFn: () => getAllFromApi<TData, TFilters>({ endPoint, appliedFilters }),
+    queryFn: async () =>
+      await getAllFromApi<TData, TFilters>({ endPoint, appliedFilters }),
     staleTime: 1000 * 60 * 5, // Los datos son frescos durante 5 minutos
     refetchOnWindowFocus: false, // No recargar al enfocar la ventana
   });

@@ -1,5 +1,4 @@
 import { Item } from "./models/item";
-import { createItemColumns } from "./components/Columns";
 import { ItemFormSchema } from "./schemas/itemSchema";
 import { Action } from "@/interfaces/action";
 import { Button } from "@/components/custom/button";
@@ -14,12 +13,15 @@ import CardViewContent from "@/components/CardView/CardViewContent";
 import useFilterData from "@/hooks/useFilterData";
 import { Filters } from "./models/filters";
 import AllViewItems from "@/components/AllViewItems/AllViewItems";
-import { getDefCardViewKey } from "@/utils/utilities";
-import { DefCardViewKeyType } from "@/interfaces/colDef";
+import { getColumnsGeneric } from "@/components/dataTable/DataTableColumns";
+import { colDef } from "./data/colDef";
+import { ColumnDef } from "@tanstack/react-table";
+import DataActions from "@/components/dataActions/DataActions";
 
 const Items = () => {
   const { appliedFilters, handleApplyFilters, handleClearFilters } =
-    useFilterData<Item>();
+    useFilterData<Filters>();
+  console.log(appliedFilters);
   const {
     isModalOpen,
     currentItem,
@@ -49,10 +51,25 @@ const Items = () => {
       },
     },
   ];
-  const columns = createItemColumns({
-    actions: additionalActions,
-  });
-  const defCardViewKey: DefCardViewKeyType[] = getDefCardViewKey(columns);
+  const columns = getColumnsGeneric<Item>({ colDef });
+  const columnsWithActions: ColumnDef<Item>[] = !additionalActions
+    ? columns
+    : [
+        ...columns,
+        {
+          header: "Acciones",
+          accessorKey: "acciones",
+          enableHiding: false,
+          cell: ({ row }) => (
+            <DataActions
+              itemSelected={row.original}
+              actions={additionalActions}
+            />
+          ),
+          size: 50,
+        },
+      ];
+
   return (
     <div className="container mx-auto p-4">
       <div className="mb-4 flex items-center justify-between">
@@ -67,7 +84,7 @@ const Items = () => {
           <Button onClick={() => handleOpenModal(undefined, "add")}>Add</Button>
         </div>
         <AllViewItems<Item, Filters>
-          columns={columns}
+          columns={columnsWithActions}
           additionalActions={additionalActions}
           appliedFilters={appliedFilters}
         />
@@ -82,7 +99,7 @@ const Items = () => {
             <CardViewContent<Item>
               key={currentItem.id}
               data={currentItem}
-              defCardViewKey={defCardViewKey}
+              defCardViewKey={colDef}
             />
           )
         ) : (
