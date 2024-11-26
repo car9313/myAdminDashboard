@@ -12,37 +12,29 @@ const setupAxiosInterceptors = (
   logout: () => void
 ) => {
   // Interceptor de solicitudes
-  axiosInstance.interceptors.request.use((config) => {
-    console.log("Interceptor de solicitudes");
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  });
-  /*   axiosInstance.interceptors.request.use(async (config) => {
-    const token = localStorage.getItem("accessToken");
-    if (token && isTokenExpired(token)) {
-      // Si el token ha expirado, intenta renovarlo
-      try {
-        await refreshToken();
-        config.headers["Authorization"] = `Bearer
-${localStorage.getItem("accessToken")}`;
-      } catch (error) {
-        logout(); // Si la renovación falla, cerrar sesión
+  console.log("Interseptor");
+  axiosInstance.interceptors.request.use(
+    (config) => {
+      console.log("Interceptor de solicitudes");
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
       }
-    } else if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
     }
-    return config;
-  });
- */ // Interceptor de respuestas
+  );
+
   axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
+      console.log("Interseptor");
       console.log("Interceptor de respuestas");
+
       if (error.response?.status === 401) {
-        const token = localStorage.getItem("accessToken");
+        /*  const token = localStorage.getItem("accessToken");
         // Si el token ha expirado, intenta renovarlo
         if (token && isTokenExpired(token)) {
           try {
@@ -53,7 +45,8 @@ ${localStorage.getItem("accessToken")}`;
           }
         } else {
           logout();
-        }
+        } */
+        logout();
       }
       return Promise.reject(error);
     }

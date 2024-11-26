@@ -40,9 +40,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // const response = await axiosInstance.post("/auth/login", userLogin);
       const response = await api.login(userLogin.username, userLogin.password);
       return response;
+      console.log(response);
       // return response.data;
     },
     onSuccess: (data) => {
+      console.log(data);
       console.log(data);
       console.log(useContext);
       setUserState(data);
@@ -81,20 +83,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   const refreshAccessTokenState = async () => {
     try {
+      console.log("Refrescar el token");
       /*    const response = await axiosInstance.post("/auth/refresh", {
         refreshToken: localStorage.getItem("refreshToken"),
       }); */
       //  const newAccessToken = response.data.accessToken;
-      const newAccessToken = localStorage.getItem("refreshToken") + "refresh";
+      const newAccessToken =
+        /* localStorage.getItem("refreshToken") + "refresh" */ "1000000";
       if (newAccessToken) {
         localStorage.setItem("accessToken", newAccessToken);
-        setUserState((prevState) =>
+        console.log(userState);
+        /* setUserState((prevState) =>
           prevState ? { ...prevState, accessToken: newAccessToken } : null
-        );
+        ); */
+        console.log(userState);
         axiosInstance.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
       }
     } catch (error) {
-      throw new Error("Token refresh failed");
+      throw new Error(" Fallo Refress Token.No se pude refrescar el token");
     }
   };
 
@@ -103,22 +109,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const storedAccessToken = localStorage.getItem("accessToken");
       const storedUserData = localStorage.getItem("userData");
+      console.log(storedUserData);
+      console.log(storedAccessToken);
       if (storedAccessToken && storedUserData) {
-        const isExpired = isTokenExpired(storedAccessToken);
+        const newUserState: UserState = JSON.parse(storedUserData);
+        console.log(newUserState);
+        setUserState(newUserState);
+        console.log(userState);
+        // const isExpired = isTokenExpired(storedAccessToken);
         // Utiliza la función de verificación de expiración
-        if (!isExpired) {
-          setUserState(JSON.parse(storedUserData));
-        } else {
-          refreshAccessTokenState(); // Intentar renovar el token si ha expirad
-        }
+        /*  if (isExpired) {
+         
+          refreshAccessTokenState();
+        } */
       }
-      setupAxiosInterceptors(refreshAccessTokenState, logout); // Configurar el interceptor
+      /*  setupAxiosInterceptors(refreshAccessTokenState, logout); // Configurar el interceptor */
     } catch (error) {
       logout();
     }
   }, []);
-  const setLocalStorageTokens = (userState: UserState) => {
-    const { user, accessToken, refreshAccessToken } = userState;
+  const setLocalStorageTokens = (prueba: UserState) => {
+    console.log(userState);
+    const { user, accessToken, refreshAccessToken } = prueba;
     localStorage.setItem("userData", JSON.stringify(user));
     localStorage.setItem("accessToken", JSON.stringify(accessToken));
     localStorage.setItem(

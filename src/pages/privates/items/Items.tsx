@@ -21,7 +21,6 @@ import DataActions from "@/components/dataActions/DataActions";
 const Items = () => {
   const { appliedFilters, handleApplyFilters, handleClearFilters } =
     useFilterData<Filters>();
-  console.log(appliedFilters);
   const {
     isModalOpen,
     currentItem,

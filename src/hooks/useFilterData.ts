@@ -1,17 +1,17 @@
 import { useState } from "react";
 
 interface UseFilterDataReturnProps<T> {
-  appliedFilters: {} | T;
-  handleApplyFilters: (filters: T | {}) => void;
+  appliedFilters: T | undefined;
+  handleApplyFilters: (filters: T | undefined) => void;
   handleClearFilters: () => void;
 }
 const useFilterData = <T>(): UseFilterDataReturnProps<T> => {
-  const [appliedFilters, setAppliedFilters] = useState<T | {}>({});
-  const handleApplyFilters = (filters: T | {}) => {
+  const [appliedFilters, setAppliedFilters] = useState<T | undefined>();
+  const handleApplyFilters = (filters: T | undefined) => {
     setAppliedFilters(filters);
   };
   const handleClearFilters = () => {
-    setAppliedFilters({});
+    setAppliedFilters(undefined);
   };
   return {
     appliedFilters,

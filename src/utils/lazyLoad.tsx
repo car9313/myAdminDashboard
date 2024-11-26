@@ -1,4 +1,4 @@
-import Loader from "@/components/loader";
+import Spinner from "@/components/Spinner";
 import { lazy, Suspense } from "react";
 
 // Función para envolver los componentes con Suspense
@@ -7,7 +7,7 @@ export function lazyLoad(
 ) {
   const LazyComponent = lazy(importFunc);
   return (
-    <Suspense fallback={<Loader />}>
+    <Suspense fallback={<Spinner />}>
       <LazyComponent />
     </Suspense>
   );

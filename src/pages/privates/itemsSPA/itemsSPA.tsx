@@ -43,7 +43,6 @@ const ItemsSPA = () => {
   const columns = createItemColumns<ItemSPA>({
     actions: additionalActions,
   });
-  /*  const defCardViewKey: DefCardViewKeyType[] = getDefCardViewKey(columns); */
   return (
     <div className="container mx-auto p-4">
       <div className="mb-4 flex items-center justify-between">

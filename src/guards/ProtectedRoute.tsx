@@ -1,6 +1,6 @@
 // ProtectedRoute.tsx
 import { useAuth } from "@/context/authContext";
-import React from "react";
+
 import { Navigate, Outlet } from "react-router-dom";
 
 interface ProtectedRouteProps {
@@ -17,7 +17,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const hasAccess = userState
     ? hasPermission(userState.user.roles, requiredResource, requiredAction)
     : false;
-  console.log(hasAccess);
+
   return !userState || !hasAccess ? <Navigate to="/login" /> : <Outlet />;
 };
 

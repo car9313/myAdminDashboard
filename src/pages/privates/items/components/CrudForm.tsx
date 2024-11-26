@@ -47,7 +47,7 @@ const CrudForm = ({ modalMode, currentItem, onCloseModal }: CrudFormProps) => {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-2">
           <FormField
             name="name"
             control={form.control}
