@@ -14,7 +14,8 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Item } from "../models/item";
 import { dataApi } from "../data/dataApi";
-import useCrudQueryActions from "@/hooks/useCrudQueryActions";
+import Loader from "@/components/loader";
+import useCrudFormModal from "@/hooks/useCrudFormModal";
 
 interface CrudFormProps {
   modalMode: string;
@@ -23,27 +24,15 @@ interface CrudFormProps {
 }
 
 const CrudForm = ({ modalMode, currentItem, onCloseModal }: CrudFormProps) => {
-  const form = useForm<ItemFormSchema>({
-    resolver: zodResolver(itemSchema),
-    defaultValues: currentItem ? currentItem : {},
-    mode: "onChange",
+  const { form, onSubmit, isSubmitting } = useCrudFormModal({
+    schema: itemSchema,
+    defaultValues: { name: "", description: "" },
+    currentItem,
+    modalMode,
+    onCloseModal,
+    dataApi,
   });
-  const { mutationCreate, mutationUpdate } =
-    useCrudQueryActions<ItemFormSchema>({
-      ...dataApi,
-    });
 
-  const onSubmit = (formData: ItemFormSchema) => {
-    if (modalMode === "edit" && currentItem) {
-      mutationUpdate.mutate({
-        id: currentItem.id,
-        updatedItem: formData,
-      });
-    } else if (modalMode === "add") {
-      mutationCreate.mutate(formData);
-    }
-    onCloseModal();
-  };
   return (
     <>
       <Form {...form}>
@@ -75,7 +64,15 @@ const CrudForm = ({ modalMode, currentItem, onCloseModal }: CrudFormProps) => {
             )}
           />
           <DialogFooter>
-            <Button disabled={!form.formState.isValid}>Guardar</Button>
+            <Button
+              disabled={
+                !form.formState.isValid ||
+                !Object.keys(form.formState.dirtyFields).length
+              }
+            >
+              {isSubmitting && <Loader />}
+              Guardar
+            </Button>
             <Button
               variant={"destructive"}
               type={"button"}

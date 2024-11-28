@@ -49,10 +49,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // return response.data;
     },
     onSuccess: (data) => {
+      // Configurar token manualmente para solicitudes inmediatas
+      axiosInstance.defaults.headers.common["Authorization"] =
+        `Bearer ${data.accessToken}`;
+      // Configurar estado del usuario
       setUserState(data);
       setSessionlStorage(data);
-      /*  axiosInstance.defaults.headers.common["Authorization"] =
-              `Bearer ${userData.accessToken}`; */
+      // Configurar interceptor para manejar tokens globalmente
       setupAxiosInterceptors(refreshAccessTokenState, logout);
       setIsLoaded(true);
       queryClient.invalidateQueries({

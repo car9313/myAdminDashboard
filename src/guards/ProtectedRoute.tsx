@@ -17,7 +17,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   console.log(isLoaded);
 
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return null;
   }
   const hasAccess = userState?.user
     ? hasPermission(userState?.user.roles, requiredResource, requiredAction)
