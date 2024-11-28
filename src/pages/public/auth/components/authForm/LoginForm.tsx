@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { PasswordInput } from "@/components/form/password-input";
 import { useAuth } from "@/context/authContext";
 import useCrudQueryActions from "@/hooks/useCrudQueryActions";
+import { toast } from "@/components/ui/use-toast";
 
 interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> {}
 interface LoginFormData {
@@ -38,8 +39,9 @@ const loginformSchema = z.object({
     }),
 });
 export type loginFormSchemaType = z.infer<typeof loginformSchema>;
-export function SignInForm({ className, ...props }: UserAuthFormProps) {
-  const { login } = useAuth();
+
+export function LoginForm({ className, ...props }: UserAuthFormProps) {
+  const { loginMutation } = useAuth();
   const navigate = useNavigate();
   const form = useForm<loginFormSchemaType>({
     resolver: zodResolver(loginformSchema),
@@ -50,8 +52,18 @@ export function SignInForm({ className, ...props }: UserAuthFormProps) {
   });
 
   async function onSubmit(data: loginFormSchemaType) {
-    login(data);
-    navigate("/");
+    loginMutation.mutate(data, {
+      onSuccess: () => {
+        navigate("/");
+      },
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to update user. Please try again.",
+        });
+      },
+    });
   }
   return (
     <div className={cn("grid gap-6", className)} {...props}>

@@ -1,9 +1,14 @@
+import { toast } from "@/components/ui/use-toast";
 import { api } from "@/data/apiMock";
 import { setupAxiosInterceptors } from "@/interceptors/axiosInterceptor";
 import { Role, User } from "@/interfaces/auth";
 import { axiosInstance } from "@/lib/axios";
 import { isTokenExpired } from "@/utils/utilities";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   createContext,
   ReactNode,
@@ -19,10 +24,12 @@ export interface UserState {
 }
 interface AuthContextProps {
   userState: UserState | null;
-  login: (data: LoginFormData) => void;
+  loginMutation: UseMutationResult<UserState, Error, LoginFormData, unknown>;
+  // login: (data: LoginFormData) => void;
+  isLoaded: boolean;
   logout: () => void;
   refreshAccessTokenState: (newAccessToken: string) => void;
-  hasPermission: (roles: Role[], resource: string, action: string) => boolean;
+  hasPermission: (roles: Role[], resource: string, action: string[]) => boolean;
 }
 interface LoginFormData {
   username: string;
@@ -31,118 +38,132 @@ interface LoginFormData {
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userState, setUserState] = useState<UserState | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const queryClient = useQueryClient();
 
   const loginMutation = useMutation({
     mutationFn: async (userLogin: LoginFormData): Promise<UserState> => {
-      setIsLoading(true);
       // const response = await axiosInstance.post("/auth/login", userLogin);
       const response = await api.login(userLogin.username, userLogin.password);
       return response;
-      console.log(response);
       // return response.data;
     },
     onSuccess: (data) => {
-      console.log(data);
-      console.log(data);
-      console.log(useContext);
       setUserState(data);
-      setLocalStorageTokens(data);
-      setIsLoading(false);
+      setSessionlStorage(data);
+      /*  axiosInstance.defaults.headers.common["Authorization"] =
+              `Bearer ${userData.accessToken}`; */
+      setupAxiosInterceptors(refreshAccessTokenState, logout);
+      setIsLoaded(true);
       queryClient.invalidateQueries({
         queryKey: ["userData"],
       });
     },
     onError: () => {
-      setIsLoading(false);
-      throw new Error("Login failed. Please try again.");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Login failed. Please try again.",
+      });
+      /*  throw new Error("Login failed. Please try again."); */
     },
   });
 
-  const login = (data: LoginFormData) => {
-    console.log("Login");
-    console.log(data);
-    loginMutation.mutate(data);
-  };
   const logout = () => {
-    localStorage.clear();
+    sessionStorage.clear();
     delete axiosInstance.defaults.headers.common["Authorization"];
     setUserState(null);
   };
   const hasPermission = (
     roles: Role[],
     resource: string,
-    action: string
+    actions: string[]
   ): boolean => {
     return roles.some((role) =>
       role.permissions.some(
-        (perm) => perm.resource === resource && perm.actions.includes(action)
+        (perm) =>
+          perm.resource === resource &&
+          actions.every((action) => perm.actions.includes(action))
       )
     );
   };
-  const refreshAccessTokenState = async () => {
+  // Función para refrescar el token
+  const refreshAccessTokenState = async (): Promise<void> => {
     try {
-      console.log("Refrescar el token");
-      /*    const response = await axiosInstance.post("/auth/refresh", {
-        refreshToken: localStorage.getItem("refreshToken"),
-      }); */
-      //  const newAccessToken = response.data.accessToken;
-      const newAccessToken =
-        /* localStorage.getItem("refreshToken") + "refresh" */ "1000000";
+      const response = await axiosInstance.post("/auth/refresh", {
+        refreshToken: sessionStorage.getItem("refreshToken"),
+      });
+      const newAccessToken = response.data.accessToken;
       if (newAccessToken) {
-        localStorage.setItem("accessToken", newAccessToken);
-        console.log(userState);
-        /* setUserState((prevState) =>
+        sessionStorage.setItem("accessToken", newAccessToken);
+        setUserState((prevState) =>
           prevState ? { ...prevState, accessToken: newAccessToken } : null
-        ); */
-        console.log(userState);
-        axiosInstance.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
+        );
+        //axiosInstance.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
+      } else {
+        throw new Error("Token refresh is null");
       }
     } catch (error) {
-      throw new Error(" Fallo Refress Token.No se pude refrescar el token");
+      throw new Error("Token refresh failed");
     }
   };
 
-  // Persist session on app load
-  useEffect(() => {
+  /* useEffect(() => {
+    if (userState && !isTokenExpired(userState?.accessToken)) {
+      setupAxiosInterceptors(refreshAccessTokenState, logout);
+    }
+  }, [useState]);
+ */
+  // Función para restaurar el estado del usuario desde SessionStorage
+  const restoreUserSession = async () => {
     try {
-      const storedAccessToken = localStorage.getItem("accessToken");
-      const storedUserData = localStorage.getItem("userData");
-      console.log(storedUserData);
-      console.log(storedAccessToken);
+      const storedAccessToken = sessionStorage.getItem("accessToken");
+      const storedUserData = sessionStorage.getItem("userData");
       if (storedAccessToken && storedUserData) {
-        const newUserState: UserState = JSON.parse(storedUserData);
-        console.log(newUserState);
-        setUserState(newUserState);
-        console.log(userState);
-        // const isExpired = isTokenExpired(storedAccessToken);
-        // Utiliza la función de verificación de expiración
-        /*  if (isExpired) {
-         
-          refreshAccessTokenState();
-        } */
+        //preguntar por el tiempo de valides del token
+        const isExpired = isTokenExpired(storedAccessToken); // Función para validar expiración;
+        if (!isExpired) {
+          setUserState({
+            user: JSON.parse(storedUserData),
+            accessToken: JSON.parse(storedAccessToken),
+            refreshAccessToken:
+              sessionStorage.getItem("refreshAccessToken") || "",
+          });
+        } else {
+          await refreshAccessTokenState(); // Renueva el token si es posible
+        }
+        setupAxiosInterceptors(refreshAccessTokenState, logout);
+      } else {
+        console.log(" Persist session on app load (Logout)");
+        logout();
       }
-      /*  setupAxiosInterceptors(refreshAccessTokenState, logout); // Configurar el interceptor */
+      setIsLoaded(true); // Asegurarnos de que la carga termine
+      // Marca que los datos fueron cargados
     } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to restore session. Please log in again.",
+      });
       logout();
     }
+  };
+  useEffect(() => {
+    restoreUserSession();
   }, []);
-  const setLocalStorageTokens = (prueba: UserState) => {
-    console.log(userState);
-    const { user, accessToken, refreshAccessToken } = prueba;
-    localStorage.setItem("userData", JSON.stringify(user));
-    localStorage.setItem("accessToken", JSON.stringify(accessToken));
-    localStorage.setItem(
+  const setSessionlStorage = (userState: UserState) => {
+    const { user, accessToken, refreshAccessToken } = userState;
+    sessionStorage.setItem("userData", JSON.stringify(user));
+    sessionStorage.setItem("accessToken", JSON.stringify(accessToken));
+    sessionStorage.setItem(
       "refreshAccessToken",
       JSON.stringify(refreshAccessToken)
     );
-    /*  localStorage.setItem("rol", JSON.stringify(rol));
-    localStorage.setItem("permission", JSON.stringify(permissions)); */
   };
   const values: AuthContextProps = {
     userState,
-    login,
+    loginMutation,
+    isLoaded,
     logout,
     refreshAccessTokenState,
     hasPermission,

@@ -1,6 +1,6 @@
 import { Permission } from "@/interfaces/auth";
 import { ColumnDef } from "@tanstack/react-table";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 // Función auxiliar para obtener propiedades de manera segura
 export const getProperty = <T, K extends keyof T>(obj: T, key: K): T[K] => {
   return obj[key];
@@ -30,13 +30,15 @@ export const getDefCardViewKey = <T>(columnsDef: ColumnDef<T>[]) => {
     });
 };
 export const isTokenExpired = (token: string): boolean => {
-  try {
-    const decoded: { exp: number } = jwtDecode(token);
-    const currentTime = Date.now() / 1000;
-    return decoded.exp < currentTime;
-  } catch {
-    return true;
-  }
+  /* try {
+    const decoded = jwtDecode<JwtPayload>(token);
+    const currentTime = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
+    return !!decoded.exp && decoded.exp < currentTime;
+  } catch (error) {
+    console.error("Error decodificando el token:", error);
+    return true; // Si no se puede decodificar, se asume que el token no es válido
+  } */
+  return false;
 };
 
 //Extraer acciones de los permisos de un recurso específico

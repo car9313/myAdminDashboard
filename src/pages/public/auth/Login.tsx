@@ -1,6 +1,6 @@
-import { SignInForm } from "./components/authForm/SignInForm";
+import { LoginForm } from "./components/authForm/LoginForm";
 
-export default function SignIn() {
+export default function Login() {
   return (
     <>
       <div className="container relative grid h-svh flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
@@ -52,7 +52,7 @@ export default function SignIn() {
                 to log into your account
               </p>*/}
             </div>
-            <SignInForm />
+            <LoginForm />
             {/* <p className='px-8 text-center text-sm text-muted-foreground'>
               By clicking login, you agree to our{' '}
               <a

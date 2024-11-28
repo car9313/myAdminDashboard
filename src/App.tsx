@@ -11,12 +11,14 @@ const AdminPanel = lazy(
 const router = createBrowserRouter([
   {
     path: "/login",
-    element: lazyLoad(() => import("@/pages/public/auth/SignIn")),
+    element: lazyLoad(() => import("@/pages/public/auth/Login")),
   },
 
   {
     path: "/",
-    element: <ProtectedRoute requiredResource="Audit" requiredAction="read" />,
+    element: (
+      <ProtectedRoute requiredResource={"Audit"} requiredAction={["read"]} />
+    ),
     children: [
       {
         path: "",
