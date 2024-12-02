@@ -54,10 +54,6 @@ const useCrudQueryActions = <T>({ key, endPoint }: UseCrudActionsProps) => {
         description: "Failed to update user. Please try again.",
       });
     },
-    /*  onError: (error) => {
-      //throw new Error(`Error al actualizar el elemento ${error}`);
-      alert(`Error al actualizar el elemento ${error}`);
-    }, */
   });
 
   const mutationDelete = useMutation({

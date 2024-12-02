@@ -1,6 +1,4 @@
-import { useForm } from "react-hook-form";
-import { ItemFormSchema, itemSchema } from "../schemas/itemSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { itemSchema } from "../schemas/itemSchema";
 import {
   Form,
   FormControl,

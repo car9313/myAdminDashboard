@@ -25,7 +25,6 @@ export interface UserState {
 interface AuthContextProps {
   userState: UserState | null;
   loginMutation: UseMutationResult<UserState, Error, LoginFormData, unknown>;
-  // login: (data: LoginFormData) => void;
   isLoaded: boolean;
   logout: () => void;
   refreshAccessTokenState: (newAccessToken: string) => void;
@@ -111,12 +110,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  /* useEffect(() => {
-    if (userState && !isTokenExpired(userState?.accessToken)) {
-      setupAxiosInterceptors(refreshAccessTokenState, logout);
-    }
-  }, [useState]);
- */
   // Función para restaurar el estado del usuario desde SessionStorage
   const restoreUserSession = async () => {
     try {

@@ -10,13 +10,6 @@ type UseAppFormProps<TSchema extends ZodType<any, ZodTypeDef, any>, TItem> = {
   defaultValues: z.infer<TSchema>; // Valores iniciales por defecto
   currentItem?: TItem | null | undefined; // Elemento actual (en modo edición)
   modalMode: string; // Modo del modal ("add" o "edit")
-  /*  mutationCreate: { mutate: (data: z.infer<TSchema>, options: any) => void }; // Mutación para creación
-  mutationUpdate: {
-    mutate: (
-      data: { id: string; updatedItem: z.infer<TSchema> },
-      options: any
-    ) => void;
-  }; // Mutación para actualización */
   onCloseModal: () => void; // Función para cerrar el modal
   dataApi: {
     key: string;

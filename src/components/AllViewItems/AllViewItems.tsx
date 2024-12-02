@@ -8,7 +8,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import UseGetAllFromApi from "@/hooks/useGetAllFromApi";
 import DataTableSkeleton from "@/components/dataTable/DataTableSkeleton";
 import { dataApi } from "@/pages/privates/items/data/dataApi";
-import { DefCardViewKeyType } from "./../../interfaces/colDef";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 interface AllViewItemsProps<T, TFilter> {
   columns: ColumnDef<T>[];
@@ -35,7 +35,14 @@ const AllViewItems = <T, TFilter>({
     <div className="space-y-4">
       <ViewToggle onViewChange={handleViewChange} />
       {!currentView ? (
-        <DataTable data={items} columns={columns} />
+        <Card>
+          <CardHeader>
+            <CardTitle>Card Title</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DataTable data={items} columns={columns} />
+          </CardContent>
+        </Card>
       ) : (
         <ListCardView<T>
           data={items}
