@@ -1,54 +1,57 @@
 import ListCardView from "@/components/CardView/ListCardView";
 import { DataTable } from "@/components/dataTable/DataTable";
-
-import { Action } from "@/interfaces/action";
 import { useState } from "react";
 import ViewToggle from "@/components/viewToggle/ViewToggle";
 import { ColumnDef } from "@tanstack/react-table";
 import UseGetAllFromApi from "@/hooks/useGetAllFromApi";
-import DataTableSkeleton from "@/components/dataTable/DataTableSkeleton";
-import { dataApi } from "@/pages/privates/items/data/dataApi";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import DataTableSkeleton from "@/components/skeletons/DataTableSkeleton";
+import { getDefCardViewKey } from "@/utils/utilities";
+import { typeListView } from "@/interfaces/typeListView";
+import { ActionDef } from "@/interfaces/actionDef";
 
 interface AllViewItemsProps<T, TFilter> {
   columns: ColumnDef<T>[];
-  additionalActions?: Action<T>[];
+  listActions?: ActionDef<T>[];
   appliedFilters?: TFilter;
+  dataApi: {
+    key: string;
+    endPoint: string;
+  };
+  listView?: typeListView;
 }
 const AllViewItems = <T, TFilter>({
   columns,
-  additionalActions,
+  listActions,
   appliedFilters,
+  dataApi,
+  listView = "optional",
 }: AllViewItemsProps<T, TFilter>) => {
   const { data: items = [], isLoading } = UseGetAllFromApi<T, TFilter>({
     ...dataApi,
     appliedFilters,
   });
-  const [currentView, setCurrentView] = useState<boolean>(false); // Estado para la vista seleccionada
+  const initialCurrentView = listView === "card" ? true : false;
+  const [currentView, setCurrentView] = useState<boolean>(initialCurrentView); // Estado para la vista seleccionada
   const handleViewChange = () => {
-    setCurrentView(!currentView);
+    if (listView === "optional") {
+      setCurrentView(!currentView);
+    }
   };
-
   return isLoading ? (
     <DataTableSkeleton />
   ) : (
     <div className="space-y-4">
-      <ViewToggle onViewChange={handleViewChange} />
+      {listView === "optional" && (
+        <ViewToggle onViewChange={handleViewChange} />
+      )}
       {!currentView ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Card Title</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <DataTable data={items} columns={columns} />
-          </CardContent>
-        </Card>
+        <DataTable data={items} columns={columns} />
       ) : (
         <ListCardView<T>
           data={items}
-          columnsDef={columns}
+          columnsDef={getDefCardViewKey(columns)}
           className={"hover:shadow-md"}
-          actions={additionalActions}
+          actions={listActions}
         />
       )}
     </div>

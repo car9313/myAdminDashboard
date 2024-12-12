@@ -1,6 +1,4 @@
 import { axiosInstance } from "@/lib/axios";
-const URL_BASE = "http://localhost:3000";
-
 interface FetchDataOptions<TFilters> {
   endPoint: string;
   appliedFilters?: TFilters;
@@ -10,35 +8,38 @@ export const getAllFromApi = async <TData, TFilters>(
   options: FetchDataOptions<TFilters>
 ): Promise<TData[]> => {
   const { endPoint, appliedFilters } = options;
-  const response = await axiosInstance.get<TData[]>(`${URL_BASE}/${endPoint}`, {
+  const response = await axiosInstance.get<TData[]>(`/${endPoint}`, {
     params: appliedFilters ? appliedFilters : null,
   });
-  console.log(response.data);
   return response.data;
 };
 export const getItemID = async <TData>({
   id,
   endPoint,
 }: {
-  id: string | undefined;
+  id: string | number | undefined;
   endPoint: string;
 }): Promise<TData> => {
   if (!id) throw new Error("ID indefinido");
-  const response = await axiosInstance.get<TData>(`${URL_BASE}/${endPoint}`);
+  const response = await axiosInstance.get<TData>(`/${endPoint}`);
   return response.data;
 };
 
 export const createFromApi = async <T>(url: string, newItem: T): Promise<T> => {
-  const response = await axiosInstance.post(`${URL_BASE}/${url}`, newItem);
+  const response = await axiosInstance.post(`/${url}`, newItem);
   return response.data;
 };
-export const deleteFromApi = async (url: string, id: string): Promise<void> =>
-  await axiosInstance.delete(`${URL_BASE}/${url}/${id}`);
+export const deleteFromApi = async (
+  url: string,
+  id: number | string
+): Promise<void> => {
+  await axiosInstance.delete(`/${url}/${id}`);
+};
 
 export const updateFromApi = async <T>(
   url: string,
-  id: string,
+  id: string | number,
   itemEdited: T
 ) => {
-  await axiosInstance.put(`${URL_BASE}/${url}/${id}`, itemEdited);
+  await axiosInstance.put(`/${url}/${id}`, itemEdited);
 };

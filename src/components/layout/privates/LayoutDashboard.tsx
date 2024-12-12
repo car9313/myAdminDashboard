@@ -13,8 +13,7 @@ export default function LayoutDashboard() {
         id="content"
         className={`w-full overflow-x-hidden transition-[margin] md:overflow-y-hidden md:pt-0 h-full`}
       >
-        <LayoutProvider>
-          {/* ===== Top Heading ===== */}
+        <LayoutProvider className="bg-primary/5">
           <LayoutProvider.Header sticky className="p-2">
             <Navbar />
           </LayoutProvider.Header>

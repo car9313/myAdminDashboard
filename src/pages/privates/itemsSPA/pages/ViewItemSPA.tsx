@@ -3,9 +3,6 @@ import { getItemID } from "@/services/crudGenericFormApi";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { ItemSPA } from "../models/itemSPA";
-import { DefCardViewKeyType } from "@/interfaces/colDef";
-import { getDefCardViewKey } from "@/utils/utilities";
-import { createItemColumns } from "../components/ItemsSPAColumns";
 import { colDef } from "../data/colDef";
 
 const ViewItemSPA = () => {

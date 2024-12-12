@@ -21,6 +21,8 @@
       --accent-foreground: 240 5.9% 10%;
       --destructive: 0 84.2% 60.2%;
       --destructive-foreground: 0 0% 98%;
+      --success: 141.9 69.2% 58%;
+      --success-foreground: 0 85.7% 97.3%;
       --border: 240 5.9% 90%;
       --input: 240 5.9% 90%;
       --ring: 142.1 76.2% 36.3%;
@@ -30,6 +32,10 @@
       --chart-3: 197 37% 24%;
       --chart-4: 43 74% 66%;
       --chart-5: 27 87% 67%;
+      --link-sidebar: 141 78.9% 85.1%;
+      --link-sidebar-foreground: 240 5.9% 10%;
+      --link-sidebar-hover: 141.7 76.6% 73.1%;
+      --link-sidebar-hover-foreground: 240 5.9% 10%;
     }
 
     .dark {
@@ -41,6 +47,7 @@
       --popover-foreground: 0 0% 95%;
       --primary: 142.1 70.6% 45.3%;
       --primary-foreground: 144.9 80.4% 10%;
+      --prueba: 156.2 71.6% 66.9%;
       --secondary: 240 3.7% 15.9%;
       --secondary-foreground: 0 0% 98%;
       --muted: 0 0% 15%;
@@ -49,6 +56,8 @@
       --accent-foreground: 0 0% 98%;
       --destructive: 0 62.8% 30.6%;
       --destructive-foreground: 0 85.7% 97.3%;
+      --success: 141.9 69.2% 58%;
+      --success-foreground: 0 85.7% 97.3%;
       --border: 240 3.7% 15.9%;
       --input: 240 3.7% 15.9%;
       --ring: 142.4 71.8% 29.2%;
@@ -57,6 +66,10 @@
       --chart-3: 30 80% 55%;
       --chart-4: 280 65% 60%;
       --chart-5: 340 75% 55%;
+      --link-sidebar: 141 58.82% 26.67%;
+      --link-sidebar-foreground: 0 0% 98%;
+      --link-sidebar-hover: 143.8 61.2% 20.2%;
+      --link-sidebar-hover-foreground: 240 5.9% 10%;
     }
   }
 
@@ -368,6 +381,6 @@
     width: 0px;
   }
 }
-.sidebarBG {
-  background: #22c55e;
-}
+/* .sidebarBG {
+  @apply bg-primary;
+} */

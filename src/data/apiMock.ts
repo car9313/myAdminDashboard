@@ -14,57 +14,16 @@ const mockUsers: User[] = [
         name: "Administrador",
         permissions: [
           { resource: "Audit", description: null, actions: ["read"] },
+
           {
-            resource: "CauseRejection",
-            description: null,
-            actions: ["read", "update", "create", "delete"],
-          },
-          {
-            resource: "Municipalities",
-            description: null,
-            actions: ["read", "update", "create", "delete"],
-          },
-          {
-            resource: "Provinces",
-            description: null,
-            actions: ["read", "update", "create", "delete"],
-          },
-          {
-            resource: "CertifyRequest",
-            description: null,
-            actions: ["update"],
-          },
-          {
-            resource: "RequestOficina",
-            description: null,
-            actions: ["read", "update"],
-          },
-          {
-            resource: "Request",
-            description: null,
-            actions: ["read", "update"],
-          },
-          { resource: "VerifyRequest", description: null, actions: ["update"] },
-          {
-            resource: "RequestAddress",
-            description: null,
-            actions: ["read", "update"],
-          },
-          {
-            resource: "SecuritySettings",
-            description: null,
-            actions: ["update"],
-          },
-          { resource: "ResetPassword", description: null, actions: ["update"] },
-          {
-            resource: "Role",
-            description: null,
-            actions: ["read", "create", "update", "delete"],
-          },
-          {
-            resource: "User",
+            resource: "Item",
             description: null,
             actions: ["read", "create", "delete", "update"],
+          },
+          {
+            resource: "ItemSPA",
+            description: null,
+            actions: ["read", "create"],
           },
         ],
         editable: false,
@@ -77,6 +36,7 @@ const mockUsers: User[] = [
 ];
 export const api = {
   login: async (username: string, password: string) => {
+    console.log(password);
     await delay(500);
     const user = mockUsers.find((u) => u.username === username);
     if (!user) throw new Error("Invalid credentials");

@@ -2,72 +2,87 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryProvider } from "./lib/react-query/QueryProvider";
 import { ThemeProvider } from "./components/theme-provider";
 import { AuthProvider } from "./context/authContext";
-import { lazyLoad } from "./utils/lazyLoad";
-import ProtectedRoute from "./guards/ProtectedRoute";
-/* 
-const AdminPanel = lazy(
-  () => import("@/components/layout/privates/LayoutDashboard")
-); */
+import GeneralError from "./pages/errors/general-error";
+import NotFoundError from "./pages/errors/not-found-error";
+import MaintenanceError from "./pages/errors/maintenance-error";
+import UnauthorisedError from "./pages/errors/unauthorised-error";
+import LayoutDashboard from "./components/layout/privates/LayoutDashboard";
+import { lazyLoadPrivate, lazyLoadPublic } from "./utils/lazyLoad";
+
 const router = createBrowserRouter([
   {
     path: "/login",
-    element: lazyLoad(() => import("@/pages/public/auth/Login")),
+    element: lazyLoadPublic(() => import("@/pages/public/auth/Login")),
   },
 
   {
     path: "/",
-    element: (
-      <ProtectedRoute requiredResource={"Audit"} requiredAction={["read"]} />
-    ),
+    element: <LayoutDashboard />,
     children: [
       {
         path: "",
-        element: lazyLoad(
-          () => import("@/components/layout/privates/LayoutDashboard")
+        element: lazyLoadPrivate(
+          () => import("./pages/privates/dashboard/Dashboard"),
+          "Audit",
+          ["read"]
         ),
+      },
+      {
+        path: "items",
+        element: lazyLoadPrivate(
+          () => import("@/pages/privates/items/Items"),
+          "Item",
+          ["read"]
+        ),
+      },
+      {
+        path: "itemsSPA",
         children: [
           {
             index: true,
-            element: lazyLoad(
-              () => import("./pages/privates/dashboard/Dashboard")
+            element: lazyLoadPrivate(
+              () => import("./pages/privates/itemsSPA/itemsSPA"),
+              "ItemSPA",
+              ["read"]
             ),
           },
           {
-            path: "items",
-            element: lazyLoad(() => import("@/pages/privates/items/Items")),
-          },
-          {
-            path: "itemsSPA",
-            element: lazyLoad(
-              () => import("@/pages/privates/itemsSPA/itemsSPA")
+            path: "add",
+            element: lazyLoadPrivate(
+              () => import("./pages/privates/itemsSPA/pages/AddItemSPA"),
+              "ItemSPA",
+              ["create"]
             ),
           },
           {
-            path: "itemsSPA/add", // Ruta para agregar un ítem
-            element: lazyLoad(
-              () => import("@/pages/privates/itemsSPA/pages/AddItemSPA")
+            path: "edit/:id",
+            element: lazyLoadPrivate(
+              () => import("./pages/privates/itemsSPA/pages/EditItemSPA"),
+              "ItemSPA",
+              ["update"]
             ),
           },
           {
-            path: "itemsSPA/edit/:id", // Ruta para editar un ítem
-            element: lazyLoad(
-              () => import("@/pages/privates/itemsSPA/pages/EditItemSPA")
+            path: "view/:id",
+            element: lazyLoadPrivate(
+              () => import("./pages/privates/itemsSPA/pages/ViewItemSPA"),
+              "ItemSPA",
+              ["read"]
             ),
-          },
-          {
-            path: "itemsSPA/view/:id", // Ruta para ver un ítem
-            element: lazyLoad(
-              () => import("@/pages/privates/itemsSPA/pages/ViewItemSPA")
-            ),
-          },
-          {
-            path: "settings",
-            element: <div>SettingsPage</div>,
           },
         ],
       },
     ],
   },
+
+  // Error routes
+  { path: "/500", Component: GeneralError },
+  { path: "/404", Component: NotFoundError },
+  { path: "/503", Component: MaintenanceError },
+  { path: "/401", Component: UnauthorisedError },
+
+  // Fallback 404 route
+  { path: "*", Component: NotFoundError },
 ]);
 
 const App = () => {

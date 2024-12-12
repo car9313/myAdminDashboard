@@ -4,20 +4,19 @@ import { ZodType, ZodTypeDef, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useCrudQueryActions from "./useCrudQueryActions";
 
-type ModalMode = "add" | "edit";
 type UseAppFormProps<TSchema extends ZodType<any, ZodTypeDef, any>, TItem> = {
   schema: TSchema; // Esquema Zod para validación
   defaultValues: z.infer<TSchema>; // Valores iniciales por defecto
   currentItem?: TItem | null | undefined; // Elemento actual (en modo edición)
   modalMode: string; // Modo del modal ("add" o "edit")
-  onCloseModal: () => void; // Función para cerrar el modal
+  onAfterSubmit: () => void; // Función para cerrar el modal
   dataApi: {
     key: string;
     endPoint: string;
   };
 };
 
-const useCrudFormModal = <
+const useCrudForm = <
   TSchema extends ZodType<any, ZodTypeDef, any>,
   TItem extends { id: string },
 >({
@@ -25,9 +24,7 @@ const useCrudFormModal = <
   defaultValues,
   currentItem,
   modalMode,
-  /* mutationCreate,
-mutationUpdate, */
-  onCloseModal,
+  onAfterSubmit,
   dataApi,
 }: UseAppFormProps<TSchema, TItem>) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,7 +50,7 @@ mutationUpdate, */
       {
         onSettled: () => {
           setIsSubmitting(false);
-          onCloseModal();
+          onAfterSubmit();
         },
       }
     );
@@ -62,7 +59,7 @@ mutationUpdate, */
     mutationCreate.mutate(formData, {
       onSettled: () => {
         setIsSubmitting(false);
-        onCloseModal();
+        onAfterSubmit();
       },
     });
   };
@@ -81,4 +78,4 @@ mutationUpdate, */
   };
 };
 
-export default useCrudFormModal;
+export default useCrudForm;

@@ -28,11 +28,11 @@ export default function Sidebar() {
         onClick={() => setNavOpened(false)}
         className={`absolute inset-0 transition-[opacity] delay-100 duration-700 ${navOpened ? "h-svh opacity-50" : "h-0 opacity-0"} w-full bg-black md:hidden`}
       />
-      <LayoutProvider fixed className={` ${navOpened ? "h-svh" : ""}`}>
+      <LayoutProvider fixed className={` ${navOpened ? "h-svh" : ""} `}>
         {/* Header */}
         <LayoutProvider.Header
           sticky
-          className="sidebarBG z-50 flex  justify-between px-4 md:px-4"
+          className="bg-background z-50 flex  justify-between px-4 md:px-4"
         >
           <div className={`flex items-center ${!isCollapsed ? "gap-2" : ""}`}>
             <SidebarLogo />
@@ -61,7 +61,7 @@ export default function Sidebar() {
         {/* Navigation links */}
         <Nav
           id="sidebar-menu"
-          className={` sidebarBG z-40 h-full flex-1 overflow-auto ${navOpened ? "max-h-screen" : "max-h-0 py-0 md:max-h-screen md:py-2"}`}
+          className={` bg-background z-40 h-full flex-1 overflow-auto ${navOpened ? "max-h-screen" : "max-h-0 py-0 md:max-h-screen md:py-2"}`}
           closeNav={() => setNavOpened(false)}
           isCollapsed={isCollapsed}
         />
@@ -70,8 +70,7 @@ export default function Sidebar() {
         <Button
           onClick={() => setIsCollapsed((prev) => !prev)}
           size="icon"
-          variant="outline"
-          className="absolute -right-5 top-1/2 z-50 hidden rounded-full md:inline-flex"
+          className="absolute -right-5 top-1/2 z-50 hidden rounded-full md:inline-flex shadow-sm"
         >
           <IconChevronsLeft
             stroke={1.5}

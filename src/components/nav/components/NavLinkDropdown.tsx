@@ -26,7 +26,7 @@ const NavLinkDropdown = ({
     <Collapsible defaultOpen={isChildActive}>
       <CollapsibleTrigger
         className={cn(
-          buttonVariants({ variant: "ghost", size: "sm" }),
+          buttonVariants({ variant: "link_sidebar", size: "sm" }),
           "group h-12 w-full justify-start rounded-none px-6"
         )}
       >

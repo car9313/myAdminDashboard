@@ -1,8 +1,6 @@
 import axios from "axios";
-const baseURL = "http://localhost:3000";
-/* const controller = new AbortController(); */
+const baseURL = import.meta.env.VITE_API_URL;
+console.log(`API URL: ${baseURL}`);
 export const axiosInstance = axios.create({
-  // signal: controller.signal,
   baseURL,
-  // withCredentials: true,
 });

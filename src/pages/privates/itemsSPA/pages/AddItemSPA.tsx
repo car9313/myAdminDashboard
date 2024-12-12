@@ -1,4 +1,4 @@
-import ItemsSPACrudForm from "../components/ItemsSPACrudForm";
+import ItemsSPACrudForm from "../components/CrudForm";
 
 const AddItemSPA = () => {
   return (

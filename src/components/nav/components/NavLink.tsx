@@ -19,10 +19,10 @@ const NavLink = ({
       onClick={closeNav}
       className={cn(
         buttonVariants({
-          variant: checkActiveNav(href) ? "secondary" : "ghost",
+          variant: checkActiveNav(href) ? "link_sidebar" : "link_sidebar_hover",
           size: "sm",
         }),
-        "h-12 justify-start text-wrap rounded-none px-6",
+        "h-12 justify-start text-wrap px-6 rounded-md ",
         subLink && "h-10 w-full border-l border-l-slate-500 px-2"
       )}
       aria-current={checkActiveNav(href) ? "page" : undefined}

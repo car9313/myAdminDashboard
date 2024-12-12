@@ -21,7 +21,7 @@ import AdvancedTextSearchField from "@/components/form/AdvancedTextSearchField";
 import TagInputField from "@/components/form/TagInputField";
 import SelectField from "@/components/form/SelectField";
 import { Filters } from "../models/filters";
-import DependentSelectField from "@/components/form/DependentSelectField";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const languageOptions = [
   { label: "English", value: "en" },
@@ -32,18 +32,6 @@ const languageOptions = [
   { label: "Russian", value: "ru" },
 ];
 
-/* const categoryOptions = [
-  { label: "Technology", value: "technology" },
-  { label: "Health", value: "health" },
-  { label: "Finance", value: "finance" },
-]; */
-/* const relatedOptions = [
-  { label: "Categoría 1", value: "cat1" },
-  { label: "Categoría 2", value: "cat2" },
-  { label: "Categoría 3", value: "cat3" },
-  // Agrega más opciones según sea necesario
-];
- */
 // Opciones de ejemplo
 const categoryOptions = [
   { label: "Categoría 1", value: "cat1" },
@@ -51,20 +39,6 @@ const categoryOptions = [
   { label: "Categoría 3", value: "cat3" },
 ];
 
-const productOptions = {
-  cat1: [
-    { label: "Producto 1A", value: "prod1a" },
-    { label: "Producto 1B", value: "prod1b" },
-  ],
-  cat2: [
-    { label: "Producto 2A", value: "prod2a" },
-    { label: "Producto 2B", value: "prod2b" },
-  ],
-  cat3: [
-    { label: "Producto 3A", value: "prod3a" },
-    { label: "Producto 3B", value: "prod3b" },
-  ],
-};
 interface FilterFormProps {
   onApplyFilters: (filters: Filters) => void;
   onClearFilters: () => void;
@@ -98,19 +72,9 @@ const FilterForm = ({ onApplyFilters, onClearFilters }: FilterFormProps) => {
   };
 
   const hasActiveFilters = form.formState.isDirty || form.formState.isSubmitted;
-  /*  const normalizeDateValue = (date: Date | null) => date || undefined;
-  const normalizeDateRange = (range: {
-    from: Date | null;
-    to: Date | null;
-  }) => {
-    return {
-      from: range.from || undefined,
-      to: range.to || undefined,
-    };
-  }; */
 
   return (
-    <>
+    <div className="flex items-center justify-between">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline">
@@ -187,23 +151,9 @@ const FilterForm = ({ onApplyFilters, onClearFilters }: FilterFormProps) => {
                   placeholder="Añadir palabras clave"
                   control={form.control}
                 />
-                {/*  <DependentSelectField
-                  name="category"
-                  label="Categoría"
-                  options={categoryOptions}
-                  dependentOptions={productOptions}
-                  control={form.control}
-                />
-                <DependentSelectField
-                  name="product"
-                  label="Producto"
-                  options={[]}
-                  dependentOptions={productOptions}
-                  control={form.control}
-                /> */}
               </div>
               {hasActiveFilters && (
-                <div className="flex justify-end gap-4">
+                <div className="flex justify-end gap-4 ">
                   <Button type="submit">Aplicar filtros</Button>
                   <Button type="button" onClick={handleClear}>
                     Limpiar
@@ -214,7 +164,90 @@ const FilterForm = ({ onApplyFilters, onClearFilters }: FilterFormProps) => {
           </Form>
         </DropdownMenuContent>
       </DropdownMenu>
-    </>
+    </div>
+    /*  <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline">Abrir filtros</Button>
+      </SheetTrigger>
+      <SheetContent side="top">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className=" w-full p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <TextInputField
+                name="name"
+                label="Nombre"
+                placeholder="Filtrar por nombre"
+                control={form.control}
+              />
+              <TextInputField
+                name="description"
+                label="Descripcion"
+                placeholder="Filtrar por Descripcion"
+                control={form.control}
+              />
+              <SelectField
+                name="language"
+                label="Language"
+                options={languageOptions}
+                control={form.control}
+              />
+              <MultiSelectField // Usa el nuevo MultiSelectField
+                name="languages"
+                label="Languages"
+                options={languageOptions}
+                control={form.control}
+              />
+              <DatePickerField
+                name="date"
+                label="Date of birth"
+                control={form.control}
+              />
+              <DateRangePickerField
+                name="rangeDate"
+                label="Rango de Fecha"
+                control={form.control}
+              />
+              <NumberRangeField
+                name="priceRange"
+                label="Rango de precio"
+                control={form.control}
+              />
+              <CategoryCheckboxField
+                name="categories"
+                label="Categorías"
+                options={categoryOptions}
+                control={form.control}
+              />
+              <BooleanSwitchField
+                name="isPublished"
+                label="Publicado"
+                control={form.control}
+              />
+              <AdvancedTextSearchField
+                name="advancedSearch"
+                label="Búsqueda avanzada"
+                placeholder="Buscar texto avanzado"
+                control={form.control}
+              />
+              <TagInputField
+                name="keywords"
+                label="Palabras clave"
+                placeholder="Añadir palabras clave"
+                control={form.control}
+              />
+            </div>
+            {hasActiveFilters && (
+              <div className="flex justify-end gap-4">
+                <Button type="submit">Aplicar filtros</Button>
+                <Button type="button" onClick={handleClear}>
+                  Limpiar
+                </Button>
+              </div>
+            )}
+          </form>
+        </Form>
+      </SheetContent>
+    </Sheet> */
   );
 };
 export default FilterForm;

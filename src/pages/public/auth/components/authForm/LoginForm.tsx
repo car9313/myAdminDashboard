@@ -1,4 +1,4 @@
-import { HTMLAttributes, useState } from "react";
+import { HTMLAttributes } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -17,14 +17,13 @@ import { Button } from "@/components/custom/button";
 import { cn } from "@/lib/utils";
 import { PasswordInput } from "@/components/form/password-input";
 import { useAuth } from "@/context/authContext";
-import useCrudQueryActions from "@/hooks/useCrudQueryActions";
 import { toast } from "@/components/ui/use-toast";
 
 interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> {}
-interface LoginFormData {
+/* interface LoginFormData {
   username: string;
   password: string;
-}
+} */
 
 const loginformSchema = z.object({
   username: z.string().min(1, { message: "Please enter your email" }),

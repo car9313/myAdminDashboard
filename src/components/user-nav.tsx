@@ -10,11 +10,13 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/context/authContext";
 
 export function UserNav() {
+  const { userState, logout } = useAuth();
   /*  const { state } = useAuth()
 
-  const { deleteSession } = useAuth()
+  
   console.log(state) */
   return (
     <DropdownMenu>
@@ -26,14 +28,14 @@ export function UserNav() {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      {/* <DropdownMenuContent className='w-56' align='end' forceMount>
-        <DropdownMenuLabel className='font-normal'>
-          <div className='flex flex-col space-y-1'>
-            <p className='text-sm font-medium leading-none'>
-              {state.user?.name}
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">
+              {userState?.user?.name}
             </p>
-            <p className='text-xs leading-none text-muted-foreground'>
-              {state.user?.secondName}
+            <p className="text-xs leading-none text-muted-foreground">
+              {userState?.user?.username}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -54,11 +56,11 @@ export function UserNav() {
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={deleteSession}>
+        <DropdownMenuItem onClick={logout}>
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
-      </DropdownMenuContent> */}
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 }

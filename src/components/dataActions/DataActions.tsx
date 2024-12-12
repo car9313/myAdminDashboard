@@ -5,10 +5,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DataActionsProps } from "@/interfaces/action";
+import { ActionsDefProps } from "@/interfaces/actionDef";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 
-const DataActions = <T,>({ itemSelected, actions }: DataActionsProps<T>) => {
+const DataActions = <T,>({ itemSelected, actions }: ActionsDefProps<T>) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,9 +26,9 @@ const DataActions = <T,>({ itemSelected, actions }: DataActionsProps<T>) => {
       >
         {actions &&
           actions.length > 0 &&
-          actions.map((action, index) => (
+          actions.map((action) => (
             <DropdownMenuItem
-              key={index}
+              key={action.key}
               onClick={() => action.action(itemSelected)}
             >
               {action.label}

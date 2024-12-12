@@ -1,23 +1,21 @@
 import { ColumnDef } from "@tanstack/react-table";
-/* import DataActions from "@/components/dataActions/DataActions";
-import { Action } from "@/interfaces/action";
-import { DefinitionCol } from "@/interfaces/DefinitionCol";
- */ import { DefCardViewKeyType } from "@/interfaces/colDef";
+import DataActions from "@/components/dataActions/DataActions";
 
-interface ItemColumnsProps /* <T> */ {
-  /*   actions?: Action<T>[];
-   */ colDef: DefCardViewKeyType[];
+import { DefCardViewKeyType } from "@/interfaces/colDef";
+import { ActionDef } from "@/interfaces/actionDef";
+
+interface ItemColumnsProps<T> {
+  actions?: ActionDef<T>[];
+  colDef: DefCardViewKeyType[];
 }
-export const getColumnsGeneric = <T,>(
-  {
-    /*   actions, */
-    colDef,
-  }: ItemColumnsProps /* <T> */
-): ColumnDef<T>[] => {
-  return colDef.map((col) => {
-    return { header: col.header, accessorKey: col.value };
+export const getColumnsGeneric = <T,>({
+  actions,
+  colDef,
+}: ItemColumnsProps<T>): ColumnDef<T>[] => {
+  const columnsMapped = colDef.map((col) => {
+    return { id: col.id, header: col.header, accessorKey: col.value };
   });
-  /* const columnsEdited: ColumnDef<T>[] = !actions
+  const columnsEdited: ColumnDef<T>[] = !actions
     ? columnsMapped
     : [
         ...columnsMapped,
@@ -32,5 +30,4 @@ export const getColumnsGeneric = <T,>(
         },
       ];
   return columnsEdited;
- */
 };

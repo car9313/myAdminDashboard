@@ -21,51 +21,74 @@ const useCrudQueryActions = <T>({ key, endPoint }: UseCrudActionsProps) => {
         queryKey: [key],
       });
       toast({
-        title: "Success",
-        description: "User updated successfully",
+        variant: "success",
+        title: "Éxito",
+        description: "Elemento creado correctamente.",
       });
     },
-    onError: () => {
+    onError: (error: Error) => {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to update user. Please try again.",
+        title: "Error al crear",
+        description: error.message || "Hubo un problema al crear el elemento.",
       });
+      console.error("Error al crear el elemento:", error);
     },
   });
 
   const mutationUpdate = useMutation({
-    mutationFn: async ({ id, updatedItem }: { id: string; updatedItem: T }) =>
-      await updateFromApi(endPoint, id, updatedItem),
+    mutationFn: async ({ id, updatedItem }: { id: string; updatedItem: T }) => {
+      if (!id) {
+        throw new Error("El ID proporcionado no es válido.");
+      }
+      return await updateFromApi(endPoint, id, updatedItem);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [key],
       });
       toast({
-        title: "Success",
-        description: "User updated successfully",
+        variant: "success",
+        title: "Éxito",
+        description: "Elemento actualizado correctamente.",
       });
     },
 
-    onError: () => {
+    onError: (error: Error) => {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to update user. Please try again.",
+        title: "Error al actualizar",
+        description:
+          error.message || "Hubo un problema al actualizar el elemento.",
       });
     },
   });
 
   const mutationDelete = useMutation({
-    mutationFn: async (id: string) => await deleteFromApi(endPoint, id),
+    mutationFn: async (id: number | string) => {
+      console.log(id);
+      if (!id) {
+        throw new Error("El id no pude ser null o undefine");
+      }
+      await deleteFromApi(endPoint, id);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [key],
       });
+      toast({
+        variant: "success",
+        title: "Éxito",
+        description: "Elemento eliminado correctamente.",
+      });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       //throw new Error(`Error al actualizar el elemento ${error}`);
-      alert(`Error al actualizar el elemento ${error}`);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: `Hubo un problema al eliminar el elemento: ${error.message || "Error desconocido"}.`,
+      });
     },
   });
   return {

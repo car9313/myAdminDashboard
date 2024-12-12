@@ -18,7 +18,9 @@ const NavLinkIcon = ({ title, icon, label, href }: NavLinkProps) => {
           to={href}
           className={cn(
             buttonVariants({
-              variant: checkActiveNav(href) ? "secondary" : "ghost",
+              variant: checkActiveNav(href)
+                ? "link_sidebar"
+                : "link_sidebar_hover",
               size: "icon",
             }),
             "h-12 w-12"

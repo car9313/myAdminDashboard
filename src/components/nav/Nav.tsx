@@ -5,6 +5,14 @@ import NavLink from "./components/NavLink";
 import NavLinkDropdown from "./components/NavLinkDropdown";
 import NavLinkIcon from "./components/NavLinkIcon";
 import NavLinkIconDropdown from "./components/NavLinkIconDropdown";
+import {
+  filterSideLinksByPermissions,
+  mapUserPermissions,
+} from "@/utils/utilities";
+import { useAuth } from "@/context/authContext";
+import Spinner from "../Spinner";
+import Loader from "../loader";
+import { useMemo } from "react";
 
 interface NavProps extends React.HTMLAttributes<HTMLDivElement> {
   isCollapsed: boolean;
@@ -12,6 +20,25 @@ interface NavProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export default function Nav({ isCollapsed, className, closeNav }: NavProps) {
+  const { userState, isLoaded } = useAuth();
+
+  if (!isLoaded) {
+    return (
+      <nav className="grid gap-1 px-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
+        <Loader />
+      </nav>
+    );
+  }
+  const user = userState?.user;
+  if (!user) {
+    return null;
+  }
+  const userPermissions = useMemo(() => mapUserPermissions(user), [user]);
+  const filteredLinks: SideLink[] = useMemo(
+    () => filterSideLinksByPermissions(sidelinks, userPermissions),
+    [sidelinks, userPermissions]
+  );
+
   const renderLink = ({ sub, ...rest }: SideLink) => {
     const key = `${rest.title}-${rest.href}`;
     if (isCollapsed && sub)
@@ -43,8 +70,8 @@ export default function Nav({ isCollapsed, className, closeNav }: NavProps) {
       )}
     >
       <TooltipProvider delayDuration={0}>
-        <nav className="grid gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
-          {sidelinks.map(renderLink)}
+        <nav className="grid gap-1 px-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
+          {filteredLinks.map(renderLink)}
         </nav>
       </TooltipProvider>
     </div>

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import ItemsSPACrudForm from "../components/ItemsSPACrudForm";
+import ItemsSPACrudForm from "../components/CrudForm";
 import { useQuery } from "@tanstack/react-query";
 import { ItemSPA } from "../models/itemSPA";
 import { getItemID } from "@/services/crudGenericFormApi";

@@ -1,32 +1,41 @@
 // ProtectedRoute.tsx
 import { useAuth } from "@/context/authContext";
-import React, { useEffect } from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import UnauthorisedError from "@/pages/errors/unauthorised-error";
+import { checkPermissions } from "@/utils/utilities";
+import { ReactNode } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 
 interface ProtectedRouteProps {
   requiredResource: string;
   requiredAction: string[];
+  children?: ReactNode;
 }
-
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredResource,
   requiredAction,
+  children,
 }) => {
-  const { userState, hasPermission, isLoaded } = useAuth();
-  const location = useLocation();
-  console.log(isLoaded);
-
+  const { userState, isLoaded } = useAuth();
+  const user = userState?.user;
   if (!isLoaded) {
-    return null;
+    return null; // No renderiza hasta que los datos se carguen
   }
-  const hasAccess = userState?.user
-    ? hasPermission(userState?.user.roles, requiredResource, requiredAction)
-    : false;
-  if (!hasAccess || !userState) {
-    // Guardar la ruta actual en el almacenamiento local
-    localStorage.setItem("redirectAfterLogin", location.pathname);
+
+  // Verificación de permisos solo después de que el estado esté cargado
+
+  const hasAccess = checkPermissions({
+    user,
+    resource: requiredResource,
+    actions: requiredAction,
+  }).hasAll;
+  // Renderiza la ruta protegida o el error de autorización
+  if (!userState) {
+    return <Navigate to="/login" />;
+  } else if (!hasAccess) {
+    return <UnauthorisedError />;
   }
-  return !userState || !hasAccess ? <Navigate to="/login" /> : <Outlet />;
+
+  return children ? <>{children}</> : <Outlet />;
 };
 
 export default ProtectedRoute;

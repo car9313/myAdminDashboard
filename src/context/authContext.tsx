@@ -1,7 +1,7 @@
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/data/apiMock";
 import { setupAxiosInterceptors } from "@/interceptors/axiosInterceptor";
-import { Role, User } from "@/interfaces/auth";
+import { User } from "@/interfaces/auth";
 import { axiosInstance } from "@/lib/axios";
 import { isTokenExpired } from "@/utils/utilities";
 import {
@@ -15,6 +15,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useCallback,
 } from "react";
 
 export interface UserState {
@@ -22,19 +23,22 @@ export interface UserState {
   accessToken: string;
   refreshAccessToken: string;
 }
+
 interface AuthContextProps {
   userState: UserState | null;
   loginMutation: UseMutationResult<UserState, Error, LoginFormData, unknown>;
   isLoaded: boolean;
   logout: () => void;
-  refreshAccessTokenState: (newAccessToken: string) => void;
-  hasPermission: (roles: Role[], resource: string, action: string[]) => boolean;
+  refreshAccessTokenState: () => Promise<void>;
 }
+
 interface LoginFormData {
   username: string;
   password: string;
 }
+
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userState, setUserState] = useState<UserState | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -45,7 +49,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // const response = await axiosInstance.post("/auth/login", userLogin);
       const response = await api.login(userLogin.username, userLogin.password);
       return response;
-      // return response.data;
     },
     onSuccess: (data) => {
       // Configurar token manualmente para solicitudes inmediatas
@@ -53,7 +56,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         `Bearer ${data.accessToken}`;
       // Configurar estado del usuario
       setUserState(data);
-      setSessionlStorage(data);
+      setSessionStorage(data);
       // Configurar interceptor para manejar tokens globalmente
       setupAxiosInterceptors(refreshAccessTokenState, logout);
       setIsLoaded(true);
@@ -67,30 +70,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         title: "Error",
         description: "Login failed. Please try again.",
       });
-      /*  throw new Error("Login failed. Please try again."); */
     },
   });
 
-  const logout = () => {
+  const logout = useCallback(() => {
     sessionStorage.clear();
     delete axiosInstance.defaults.headers.common["Authorization"];
     setUserState(null);
-  };
-  const hasPermission = (
-    roles: Role[],
-    resource: string,
-    actions: string[]
-  ): boolean => {
-    return roles.some((role) =>
-      role.permissions.some(
-        (perm) =>
-          perm.resource === resource &&
-          actions.every((action) => perm.actions.includes(action))
-      )
-    );
-  };
+  }, []);
+
   // Función para refrescar el token
-  const refreshAccessTokenState = async (): Promise<void> => {
+  const refreshAccessTokenState = useCallback(async (): Promise<void> => {
     try {
       const response = await axiosInstance.post("/auth/refresh", {
         refreshToken: sessionStorage.getItem("refreshToken"),
@@ -101,14 +91,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUserState((prevState) =>
           prevState ? { ...prevState, accessToken: newAccessToken } : null
         );
-        //axiosInstance.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
       } else {
         throw new Error("Token refresh is null");
       }
     } catch (error) {
       throw new Error("Token refresh failed");
     }
-  };
+  }, []);
 
   // Función para restaurar el estado del usuario desde SessionStorage
   const restoreUserSession = async () => {
@@ -130,11 +119,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
         setupAxiosInterceptors(refreshAccessTokenState, logout);
       } else {
-        console.log(" Persist session on app load (Logout)");
+        console.log("Persist session on app load (Logout)");
         logout();
       }
       setIsLoaded(true); // Asegurarnos de que la carga termine
-      // Marca que los datos fueron cargados
     } catch (error) {
       toast({
         variant: "destructive",
@@ -144,10 +132,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       logout();
     }
   };
+
   useEffect(() => {
     restoreUserSession();
-  }, []);
-  const setSessionlStorage = (userState: UserState) => {
+  }, []); // Dependemos de restoreUserSession para evitar dependencias innecesarias
+
+  const setSessionStorage = (userState: UserState) => {
     const { user, accessToken, refreshAccessToken } = userState;
     sessionStorage.setItem("userData", JSON.stringify(user));
     sessionStorage.setItem("accessToken", JSON.stringify(accessToken));
@@ -156,16 +146,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       JSON.stringify(refreshAccessToken)
     );
   };
+
   const values: AuthContextProps = {
     userState,
     loginMutation,
     isLoaded,
     logout,
     refreshAccessTokenState,
-    hasPermission,
   };
+
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
 };
+
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

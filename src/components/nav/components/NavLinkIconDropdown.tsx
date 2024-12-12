@@ -30,7 +30,7 @@ const NavLinkIconDropdown = ({ title, icon, label, sub }: NavLinkProps) => {
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
             <Button
-              variant={isChildActive ? "secondary" : "ghost"}
+              variant={isChildActive ? "link_sidebar" : "link_sidebar_hover"}
               size="icon"
               className="h-12 w-12"
             >
