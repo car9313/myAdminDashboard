@@ -3,11 +3,12 @@ import { useForm } from "react-hook-form";
 import { ZodType, ZodTypeDef, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useCrudQueryActions from "./useCrudQueryActions";
+import { WithId, WithIdType } from "@/interfaces/withId";
 
 type UseAppFormProps<TSchema extends ZodType<any, ZodTypeDef, any>, TItem> = {
   schema: TSchema; // Esquema Zod para validación
   defaultValues: z.infer<TSchema>; // Valores iniciales por defecto
-  currentItem?: TItem | null | undefined; // Elemento actual (en modo edición)
+  currentItem?: TItem | undefined; // Elemento actual (en modo edición)
   modalMode: string; // Modo del modal ("add" o "edit")
   onAfterSubmit: () => void; // Función para cerrar el modal
   dataApi: {
@@ -18,7 +19,7 @@ type UseAppFormProps<TSchema extends ZodType<any, ZodTypeDef, any>, TItem> = {
 
 const useCrudForm = <
   TSchema extends ZodType<any, ZodTypeDef, any>,
-  TItem extends { id: string },
+  TItem extends WithId,
 >({
   schema,
   defaultValues,
@@ -44,7 +45,7 @@ const useCrudForm = <
   >({
     ...dataApi,
   });
-  const handleUpdate = (formData: z.infer<TSchema>, id: string) => {
+  const handleUpdate = (formData: z.infer<TSchema>, id: WithIdType) => {
     mutationUpdate.mutate(
       { id, updatedItem: formData },
       {

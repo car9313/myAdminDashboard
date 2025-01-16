@@ -1,5 +1,5 @@
 export interface DefCardViewKeyType {
   id: string;
-  header: string;
-  value: string;
+  title: string;
+  enableSorting?: boolean;
 }

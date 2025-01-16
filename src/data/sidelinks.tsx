@@ -34,13 +34,7 @@ export const sidelinks: SideLink[] = [
     icon: <IconChecklist size={18} />,
     resource: "Item",
   },
-  {
-    title: "ItemsSPA",
-    label: "",
-    href: "/itemsSPA",
-    icon: <IconChecklist size={18} />,
-    resource: "ItemsSPA",
-  },
+
   {
     title: "ItemsSPA",
     label: "",

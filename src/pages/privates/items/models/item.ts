@@ -1,9 +1,9 @@
-import { Item } from "@radix-ui/react-dropdown-menu";
-
 export interface Item {
-  id: string;
+  id: number;
   name: string;
-  description: string;
+  description1: string;
+  description2: string;
+  description3: string;
 }
 
-export type Model = typeof Item;
+//export type Model = typeof Item;

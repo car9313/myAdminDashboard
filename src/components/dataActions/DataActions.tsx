@@ -28,8 +28,8 @@ const DataActions = <T,>({ itemSelected, actions }: ActionsDefProps<T>) => {
           actions.length > 0 &&
           actions.map((action) => (
             <DropdownMenuItem
-              key={action.key}
-              onClick={() => action.action(itemSelected)}
+              key={action.id}
+              onClick={() => action.action({ item: itemSelected })}
             >
               {action.label}
             </DropdownMenuItem>

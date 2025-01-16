@@ -3,7 +3,8 @@ import { api } from "@/data/apiMock";
 import { setupAxiosInterceptors } from "@/interceptors/axiosInterceptor";
 import { User } from "@/interfaces/auth";
 import { axiosInstance } from "@/lib/axios";
-import { isTokenExpired } from "@/utils/utilities";
+import { isTokenExpired } from "@/utils/utils";
+
 import {
   useMutation,
   UseMutationResult,

@@ -1,5 +1,5 @@
 import { axiosInstance } from "@/lib/axios";
-import { isTokenExpired } from "@/utils/utilities";
+import { isTokenExpired } from "@/utils/utils";
 
 const setupAxiosInterceptors = (
   refreshToken: () => Promise<void>,
@@ -17,8 +17,6 @@ const setupAxiosInterceptors = (
   axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
-      console.log(error);
-      console.log("Interceptor de respuestas");
       const originalRequest = error.config;
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;

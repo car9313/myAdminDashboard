@@ -3,12 +3,12 @@ import { DefCardViewKeyType } from "@/interfaces/colDef";
 export const colDef: DefCardViewKeyType[] = [
   {
     id: "name",
-    header: "Name",
-    value: "name",
+    title: "Name",
+    enableSorting: true,
   },
   {
     id: "description",
-    header: "Description",
-    value: "description",
+    title: "Description",
+    enableSorting: true,
   },
 ];

@@ -1,9 +1,9 @@
 import { Role } from "@/interfaces/auth";
 import { RolFormSchema } from "./schemas/rolSchema";
 import useCrudQueryActions from "@/hooks/useCrudQueryActions";
-import useManagerModalDatatable from "@/hooks/useManagerModalDatatable";
+import useManagerModalDatatable from "@/hooks/modal/useManagerModal";
 import { dataApi } from "./data/dataApi";
-import useGetActionCrud from "@/hooks/useGetActionCrud";
+import useGetActionCrud from "@/hooks/useGetActionsWithPermissions";
 import { useMemo } from "react";
 import { getColumnsGeneric } from "@/components/dataTable/DataTableColumns";
 import { colDef } from "./data/colDef";
@@ -39,7 +39,6 @@ const Roles = () => {
       {
         label: "Aprobar",
         action: (row) => {
-          console.log(row);
           /* Lógica de aprobación */
         },
         permissions: ["approve"],
@@ -47,7 +46,6 @@ const Roles = () => {
       {
         label: "Rechazar",
         action: (row) => {
-          console.log(row);
           /* Lógica de rechazo */
         },
         permissions: ["reject"],
@@ -79,7 +77,7 @@ const Roles = () => {
       </div>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Button onClick={() => handleOpenModal(undefined, "add")}>Add</Button>
+          <Button onClick={() => handleOpenModal({ mode: "add" })}>Add</Button>
         </div>
         <AllViewItems<Role, undefined>
           columns={columns}

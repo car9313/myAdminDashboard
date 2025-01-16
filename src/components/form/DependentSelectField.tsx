@@ -40,8 +40,7 @@ const DependentSelectField = <T extends FieldValues>({
 }: DependentSelectFieldProps<T>) => {
   const { field } = useController(controllerProps);
   const [filteredOptions, setFilteredOptions] = useState<Option[]>([]);
-  console.log(options);
-  console.log(dependentOptions);
+
   // Lógica para filtrar las opciones del segundo select dependiendo del valor seleccionado en el primero
   useEffect(() => {
     console.log(field.value);

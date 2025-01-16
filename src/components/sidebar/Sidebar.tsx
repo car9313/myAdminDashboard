@@ -5,6 +5,7 @@ import Nav from "../nav/Nav";
 import SidebarLogo from "./components/SidebarLogo";
 import useIsCollapsed from "@/hooks/useIsCollapsed";
 import { LayoutProvider } from "../layout/privates/context/LayoutContext";
+import { sidelinks } from "@/data/sidelinks";
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useIsCollapsed();
@@ -64,6 +65,7 @@ export default function Sidebar() {
           className={` bg-background z-40 h-full flex-1 overflow-auto ${navOpened ? "max-h-screen" : "max-h-0 py-0 md:max-h-screen md:py-2"}`}
           closeNav={() => setNavOpened(false)}
           isCollapsed={isCollapsed}
+          links={sidelinks}
         />
 
         {/* Scrollbar width toggle button */}

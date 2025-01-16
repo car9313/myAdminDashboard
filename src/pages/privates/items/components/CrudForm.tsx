@@ -14,10 +14,11 @@ import { Item } from "../models/item";
 import { dataApi } from "../data/dataApi";
 import Loader from "@/components/loader";
 import useCrudForm from "@/hooks/useCrudForm";
+import { ModalMode } from "@/interfaces/modalMode";
 
 interface CrudFormProps {
-  modalMode: string;
-  currentItem?: Item | null;
+  modalMode: ModalMode;
+  currentItem?: Item | undefined;
   onAfterSubmit: () => void;
 }
 

@@ -6,15 +6,14 @@ import { Toaster } from "@/components/ui/toaster";
 
 export default function LayoutDashboard() {
   return (
-    <div className="relative md:flex h-full overflow-hidden">
-      {/*  <SkipToMain /> */}
+    <div className="relative md:flex h-full">
       <Sidebar />
       <main
         id="content"
-        className={`w-full overflow-x-hidden transition-[margin] md:overflow-y-hidden md:pt-0 h-full`}
+        className={`w-full overflow-x-hidden transition-[margin] md:overflow-y-hidden  h-full`}
       >
-        <LayoutProvider className="bg-primary/5">
-          <LayoutProvider.Header sticky className="p-2">
+        <LayoutProvider className=" bg-gradient-to-tl from-primary/10 to-background  ">
+          <LayoutProvider.Header sticky>
             <Navbar />
           </LayoutProvider.Header>
           <LayoutProvider.Body>

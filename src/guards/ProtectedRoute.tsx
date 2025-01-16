@@ -1,7 +1,7 @@
 // ProtectedRoute.tsx
 import { useAuth } from "@/context/authContext";
 import UnauthorisedError from "@/pages/errors/unauthorised-error";
-import { checkPermissions } from "@/utils/utilities";
+import { checkPermissions } from "@/utils/permissions";
 import { ReactNode } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 

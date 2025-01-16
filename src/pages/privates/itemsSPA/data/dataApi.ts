@@ -1,4 +1,4 @@
 export const dataApi = {
-  key: "items",
-  endPoint: "items",
+  key: "itemsSPA",
+  endPoint: "itemsSPA",
 };

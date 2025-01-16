@@ -1,27 +1,23 @@
+import React from "react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "../ui/dialog";
 
-import { ReactNode } from "react";
-
-interface WindowsModalProps {
+interface ModalProps {
   isOpen: boolean;
-  onClose: (isOpen: boolean) => void;
+  onClose: () => void;
   title: string;
-  children: ReactNode;
+  description?: string;
+  children?: React.ReactNode;
 }
 
-const WindowsModal = ({
-  isOpen,
-  onClose,
-  title,
-  children,
-}: WindowsModalProps) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
@@ -36,4 +32,5 @@ const WindowsModal = ({
     </Dialog>
   );
 };
-export default WindowsModal;
+
+export default Modal;

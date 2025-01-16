@@ -1,52 +1,60 @@
-import { ItemSPA } from "./models/itemSPA";
-import useCrudQueryActions from "@/hooks/useCrudQueryActions";
+import { ItemSPA, ItemSPA as Model } from "./models/itemSPA";
 import { dataApi } from "./data/dataApi";
-import { useNavigate } from "react-router-dom";
-import useGetActionCrud from "@/hooks/useGetActionCrud";
-import AllViewItems from "@/components/AllViewItems/AllViewItems";
-import { ItemSPASchemaType } from "./schemas/ItemSPAFormSchema";
-import { itemActionsList } from "@/data/itemCrudActionsList";
 import { useMemo } from "react";
 import { getColumnsGeneric } from "@/components/dataTable/DataTableColumns";
-import { colDef } from "./data/colDef";
 import CrudContainer from "@/components/Crud/CrudContainer";
-import CrudHeader from "@/components/Crud/CrudHeader";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import ViewToggle from "@/components/viewToggle/ViewToggle";
+import { Button } from "@/components/custom/button";
+import useSPAActionCrud from "@/hooks/crud/useSPAActionCrud";
+import useViewModeCrud from "@/hooks/crud/useViewModeCrud";
+import { colDef } from "./data/colDef";
+import useGetActionCrud from "@/hooks/useGetActionsWithPermissions";
+import AllViewItems from "@/components/AllViewItems/AllViewItems";
+import { IconCirclePlus } from "@tabler/icons-react";
+
 const ItemsSPA = () => {
-  /*   const { appliedFilters, handleApplyFilters, handleClearFilters } =
-    useFilterData<ItemSPA>(); */
-  const navigate = useNavigate();
+  const {
+    isConfirmOpen,
+    crudActions,
+    closeModalConfirm,
+    handleAdd,
+    handleDelete,
+  } = useSPAActionCrud<Model>({ dataApi: dataApi });
 
-  const handleAdd = () => navigate("/itemsSPA/add");
-  const handleEdit = ({ item }: { item: ItemSPA }) =>
-    navigate(`/itemsSPA/edit/${item.id}`);
-  const handleView = ({ item }: { item: ItemSPA }) =>
-    navigate(`/itemsSPA/view/${item.id}`);
-
-  const { mutationDelete } = useCrudQueryActions<ItemSPASchemaType>({
-    ...dataApi,
-  });
-  const handleDelete = (row: ItemSPA) => {
-    mutationDelete.mutate(row.id);
-  };
-  const { listActions } = useGetActionCrud<ItemSPA>({
-    onView: handleView,
-    onEdit: handleEdit,
-    onDelete: handleDelete,
+  const { listActions = [], hasPermission } = useGetActionCrud<Model>({
     resource: "ItemSPA",
-    actionsList: itemActionsList,
+    actions: crudActions,
   });
   const columns = useMemo(
-    () => getColumnsGeneric<ItemSPA>({ actions: listActions, colDef }),
+    () => getColumnsGeneric<Model>({ actions: listActions, colDef }),
     [colDef]
   );
 
   return (
     <CrudContainer>
-      <CrudHeader title="CRUD" nameAction="Add" onAdd={handleAdd} />
-      <AllViewItems<ItemSPA, undefined>
-        columns={columns}
+      <div className="flex justify-between items-center ">
+        <div className="flex gap-2 flex-1 items-center justify-start">
+          {hasPermission(["create"]) && (
+            <Button onClick={handleAdd}>
+              <IconCirclePlus />
+              Insertar
+            </Button>
+          )}
+        </div>
+      </div>
+      <AllViewItems<Model, undefined>
         listActions={listActions}
-        dataApi={dataApi}
+        viewModeCrud="optional"
+        colDef={colDef}
+      />
+
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        onClose={closeModalConfirm}
+        onConfirm={handleDelete}
+        title="Confirm Deletion"
+        description="Are you sure you want to delete this user? This action cannot be undone."
       />
     </CrudContainer>
   );

@@ -10,4 +10,7 @@ export const itemActionsList: ActionsList = {
   delete: {
     actions: ["delete"],
   },
+  create: {
+    actions: ["create"],
+  },
 };

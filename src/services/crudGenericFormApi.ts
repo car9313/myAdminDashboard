@@ -1,17 +1,41 @@
+import { mockItemsApi } from "@/data/mocks/mockItemsApi";
+import { WithId, WithIdType } from "@/interfaces/withId";
 import { axiosInstance } from "@/lib/axios";
 interface FetchDataOptions<TFilters> {
   endPoint: string;
-  appliedFilters?: TFilters;
+  appliedFilters?: TFilters | null;
+  page?: number;
+  pageSize?: number;
 }
-
+interface PaginatedResponse<T> {
+  objects: T[]; // Lista de ítems
+  total: number; // Cantidad total de elementos
+}
 export const getAllFromApi = async <TData, TFilters>(
   options: FetchDataOptions<TFilters>
-): Promise<TData[]> => {
-  const { endPoint, appliedFilters } = options;
-  const response = await axiosInstance.get<TData[]>(`/${endPoint}`, {
-    params: appliedFilters ? appliedFilters : null,
-  });
+): Promise<PaginatedResponse<TData>> => {
+  const { endPoint, appliedFilters, page, pageSize } = options;
+  const response = await axiosInstance.get<PaginatedResponse<TData>>(
+    `/${endPoint}`,
+    {
+      params: { appliedFilters, page, pageSize },
+    }
+  );
   return response.data;
+};
+
+export const fetchItems = async <TData, TFilters>({
+  page,
+  pageSize,
+  filters,
+}: {
+  page: number;
+  pageSize: number;
+  filters?: TFilters;
+}): Promise<PaginatedResponse<TData>> => {
+  console.log(page, pageSize, filters);
+  const response = await mockItemsApi.fetchItems(page, pageSize, filters);
+  return response;
 };
 export const getItemID = async <TData>({
   id,
@@ -31,14 +55,24 @@ export const createFromApi = async <T>(url: string, newItem: T): Promise<T> => {
 };
 export const deleteFromApi = async (
   url: string,
-  id: number | string
+  id: WithIdType
 ): Promise<void> => {
-  await axiosInstance.delete(`/${url}/${id}`);
+  console.log(id);
+  console.log(url);
+  try {
+    await axiosInstance.delete(`/${url}/${id}`);
+  } catch (error: any) {
+    // Captura cualquier error y proporciona un mensaje adecuado
+    console.error("Error al eliminar el elemento", error);
+    throw new Error(
+      `Error al eliminar el elemento: ${error.message || "Error desconocido"}`
+    );
+  }
 };
 
 export const updateFromApi = async <T>(
   url: string,
-  id: string | number,
+  id: WithIdType,
   itemEdited: T
 ) => {
   await axiosInstance.put(`/${url}/${id}`, itemEdited);

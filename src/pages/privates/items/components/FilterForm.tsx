@@ -21,8 +21,6 @@ import AdvancedTextSearchField from "@/components/form/AdvancedTextSearchField";
 import TagInputField from "@/components/form/TagInputField";
 import SelectField from "@/components/form/SelectField";
 import { Filters } from "../models/filters";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-
 const languageOptions = [
   { label: "English", value: "en" },
   { label: "Spanish", value: "es" },
@@ -74,7 +72,7 @@ const FilterForm = ({ onApplyFilters, onClearFilters }: FilterFormProps) => {
   const hasActiveFilters = form.formState.isDirty || form.formState.isSubmitted;
 
   return (
-    <div className="flex items-center justify-between">
+    <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline">
@@ -164,7 +162,7 @@ const FilterForm = ({ onApplyFilters, onClearFilters }: FilterFormProps) => {
           </Form>
         </DropdownMenuContent>
       </DropdownMenu>
-    </div>
+    </>
     /*  <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline">Abrir filtros</Button>

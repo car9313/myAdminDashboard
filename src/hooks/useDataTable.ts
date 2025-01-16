@@ -35,6 +35,7 @@ const useDataTable = <TData, TValue>({
       rowSelection,
       columnFilters,
     },
+    manualPagination: true, // Indica que la paginación es controlada manualmente
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,

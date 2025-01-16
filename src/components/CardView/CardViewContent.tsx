@@ -1,4 +1,4 @@
-import { formatValue, getProperty } from "@/utils/utilities";
+import { formatValue, getProperty } from "@/utils/utils";
 import { CardContent } from "../ui/card";
 import { DefCardViewKeyType } from "@/interfaces/colDef";
 interface CardViewContentProps<T> {
@@ -10,16 +10,16 @@ const CardViewContent = <T,>({
   defCardViewKey,
 }: CardViewContentProps<T>) => {
   return defCardViewKey.map((key) => {
-    const value = getProperty(data, key.value as keyof T);
+    const value = getProperty(data, key.id as keyof T);
     return (
       <CardContent
-        key={key.value}
+        key={key.id}
         className="flex flex-col items-start justify-center gap-2"
       >
         <>
-          {key.header && (
+          {key.title && (
             <p className="line-clamp-2 text-gray-500">
-              {key.header}: {formatValue(value)}
+              {key.title}: {formatValue(value)}
             </p>
           )}
         </>

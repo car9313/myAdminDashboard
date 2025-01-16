@@ -18,12 +18,27 @@ const mockUsers: User[] = [
           {
             resource: "Item",
             description: null,
-            actions: ["read", "create", "delete", "update"],
+            actions: ["read", "delete", "create", "update"],
           },
           {
             resource: "ItemSPA",
             description: null,
             actions: ["read", "create"],
+          },
+          {
+            resource: "Requests",
+            description: null,
+            actions: ["read"],
+          },
+          {
+            resource: "Trucks",
+            description: null,
+            actions: ["read"],
+          },
+          {
+            resource: "Cargos",
+            description: null,
+            actions: ["read"],
           },
         ],
         editable: false,
@@ -36,7 +51,6 @@ const mockUsers: User[] = [
 ];
 export const api = {
   login: async (username: string, password: string) => {
-    console.log(password);
     await delay(500);
     const user = mockUsers.find((u) => u.username === username);
     if (!user) throw new Error("Invalid credentials");

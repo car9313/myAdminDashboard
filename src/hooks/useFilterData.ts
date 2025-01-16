@@ -7,6 +7,7 @@ interface UseFilterDataReturnProps<T> {
 }
 const useFilterData = <T>(): UseFilterDataReturnProps<T> => {
   const [appliedFilters, setAppliedFilters] = useState<T | undefined>();
+
   const handleApplyFilters = (filters: T | undefined) => {
     setAppliedFilters(filters);
   };

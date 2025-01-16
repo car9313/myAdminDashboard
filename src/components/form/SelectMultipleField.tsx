@@ -45,7 +45,6 @@ const MultiSelectField = <T extends FieldValues>({
   ...controllerProps
 }: MultiSelectFieldProps<T>) => {
   const { field } = useController(controllerProps);
-  console.log(field.value);
   // Ensure field.value is an array to handle multiple selections
   let selectedValues: string[] = Array.isArray(field.value) ? field.value : [];
 

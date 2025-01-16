@@ -36,14 +36,6 @@ const CrudForm = ({ modalMode, currentItem }: CrudFormProps) => {
     onAfterSubmit,
     dataApi,
   });
-
-  // Rellenar los valores iniciales si están disponibles
-  /*  useEffect(() => {
-    if (currentItem) {
-      form.setValue("name", currentItem.name);
-      form.setValue("description", currentItem.description);
-    }
-  }, [currentItem, form.setValue]); */
   return (
     <Card className="rounded-md">
       <CardHeader></CardHeader>

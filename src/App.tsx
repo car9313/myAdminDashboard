@@ -6,7 +6,6 @@ import GeneralError from "./pages/errors/general-error";
 import NotFoundError from "./pages/errors/not-found-error";
 import MaintenanceError from "./pages/errors/maintenance-error";
 import UnauthorisedError from "./pages/errors/unauthorised-error";
-import LayoutDashboard from "./components/layout/privates/LayoutDashboard";
 import { lazyLoadPrivate, lazyLoadPublic } from "./utils/lazyLoad";
 
 const router = createBrowserRouter([
@@ -17,7 +16,9 @@ const router = createBrowserRouter([
 
   {
     path: "/",
-    element: <LayoutDashboard />,
+    element: lazyLoadPublic(
+      () => import("@/components/layout/privates/LayoutDashboard")
+    ),
     children: [
       {
         path: "",
@@ -30,8 +31,16 @@ const router = createBrowserRouter([
       {
         path: "items",
         element: lazyLoadPrivate(
-          () => import("@/pages/privates/items/Items"),
+          () => import("@/pages/privates/items/Items1"),
           "Item",
+          ["read"]
+        ),
+      },
+      {
+        path: "cargos",
+        element: lazyLoadPrivate(
+          () => import("./pages/privates/cargos/Cargos"),
+          "Cargos",
           ["read"]
         ),
       },

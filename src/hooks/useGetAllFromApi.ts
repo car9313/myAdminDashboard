@@ -1,4 +1,4 @@
-import { getAllFromApi } from "@/services/crudGenericFormApi";
+import { fetchItems, getAllFromApi } from "@/services/crudGenericFormApi";
 import {
   QueryObserverResult,
   RefetchOptions,
@@ -7,28 +7,49 @@ import {
 interface UseManagementDataAndModalProps<TFilters> {
   key: string;
   endPoint: string;
-  appliedFilters?: TFilters;
+  appliedFilters?: TFilters | undefined;
+  page: number;
+  pageSize: number;
 }
 interface UseManagementDataAndModalReturn<T> {
-  data: T[] | undefined;
+  data: { objects: T[]; total: number } | undefined;
   isLoading: boolean;
   isError: boolean;
   error: unknown;
-  refetch: (
-    options?: RefetchOptions
-  ) => Promise<QueryObserverResult<T[], Error>>;
+  refetch: (options?: RefetchOptions) => Promise<
+    QueryObserverResult<
+      {
+        objects: T[];
+        total: number;
+      },
+      Error
+    >
+  >;
 }
 const UseGetAllFromApi = <TData, TFilters>({
   key,
   endPoint,
   appliedFilters,
+  page,
+  pageSize,
 }: UseManagementDataAndModalProps<TFilters>): UseManagementDataAndModalReturn<TData> => {
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: [key, appliedFilters],
+    queryKey: [key, appliedFilters, page, pageSize],
     queryFn: async () =>
-      await getAllFromApi<TData, TFilters>({ endPoint, appliedFilters }),
-    staleTime: 1000 * 60 * 5, // Los datos son frescos durante 5 minutos
-    refetchOnWindowFocus: false, // No recargar al enfocar la ventana
+      /* await getAllFromApi<TData, TFilters>({
+        endPoint,
+        appliedFilters,
+        page,
+        pageSize,
+      }) */
+      await fetchItems<TData, TFilters>({
+        filters: appliedFilters,
+        page,
+        pageSize,
+      }),
+    placeholderData: (previousData) => previousData, // Reemplaza keepPreviousData
+    staleTime: 30000, // Datos obsoletos después de 30 segundos
+    refetchOnWindowFocus: false, // Evita reconsultas innecesarias cuando el foco se mueve fuera de la ventana
   });
   return {
     data,

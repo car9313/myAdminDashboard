@@ -1,4 +1,5 @@
 import { useToast } from "@/components/ui/use-toast";
+import { WithId, WithIdType } from "@/interfaces/withId";
 import {
   createFromApi,
   deleteFromApi,
@@ -37,7 +38,13 @@ const useCrudQueryActions = <T>({ key, endPoint }: UseCrudActionsProps) => {
   });
 
   const mutationUpdate = useMutation({
-    mutationFn: async ({ id, updatedItem }: { id: string; updatedItem: T }) => {
+    mutationFn: async ({
+      id,
+      updatedItem,
+    }: {
+      id: WithIdType;
+      updatedItem: T;
+    }) => {
       if (!id) {
         throw new Error("El ID proporcionado no es válido.");
       }
@@ -65,12 +72,17 @@ const useCrudQueryActions = <T>({ key, endPoint }: UseCrudActionsProps) => {
   });
 
   const mutationDelete = useMutation({
-    mutationFn: async (id: number | string) => {
-      console.log(id);
+    mutationFn: async (id: WithIdType | undefined) => {
       if (!id) {
         throw new Error("El id no pude ser null o undefine");
       }
-      await deleteFromApi(endPoint, id);
+
+      try {
+        await deleteFromApi(endPoint, id);
+      } catch (error) {
+        console.error("Error capturado en mutationFn:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -82,7 +94,8 @@ const useCrudQueryActions = <T>({ key, endPoint }: UseCrudActionsProps) => {
         description: "Elemento eliminado correctamente.",
       });
     },
-    onError: (error: Error) => {
+    onError: (error: any) => {
+      console.log(error);
       //throw new Error(`Error al actualizar el elemento ${error}`);
       toast({
         variant: "destructive",
