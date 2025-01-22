@@ -1,0 +1,82 @@
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { ZodType, ZodTypeDef, z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import useCrudQueryActions from "./useCrudQueryActions";
+import { WithId, WithIdType } from "@/interfaces/withId";
+
+type UseAppFormProps<TSchema extends ZodType<any, ZodTypeDef, any>, TItem> = {
+  schema: TSchema; // Esquema Zod para validación
+  defaultValues: z.infer<TSchema>; // Valores iniciales por defecto
+  currentItem?: TItem | undefined; // Elemento actual (en modo edición)
+  modalMode: string; // Modo del modal ("add" o "edit")
+  onAfterSubmit: () => void; // Función para cerrar el modal
+  dataApi: {
+    key: string;
+    endPoint: string;
+  };
+};
+
+const useCrudForm = <
+  TSchema extends ZodType<any, ZodTypeDef, any>,
+  TItem extends WithId,
+>({
+  schema,
+  defaultValues,
+  currentItem,
+  modalMode,
+  onAfterSubmit,
+  dataApi,
+}: UseAppFormProps<TSchema, TItem>) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<z.infer<TSchema>>({
+    resolver: zodResolver(schema),
+    defaultValues,
+  });
+  // Rellenar los valores iniciales si `currentItem` está disponible
+  useEffect(() => {
+    if (currentItem) {
+      form.reset({ ...currentItem });
+    }
+  }, [currentItem, form.reset]);
+  const { mutationCreate, mutationUpdate } = useCrudQueryActions<
+    z.infer<TSchema>
+  >({
+    ...dataApi,
+  });
+  const handleUpdate = (formData: z.infer<TSchema>, id: WithIdType) => {
+    mutationUpdate.mutate(
+      { id, updatedItem: formData },
+      {
+        onSettled: () => {
+          setIsSubmitting(false);
+          onAfterSubmit();
+        },
+      }
+    );
+  };
+  const handleCreate = (formData: z.infer<TSchema>) => {
+    mutationCreate.mutate(formData, {
+      onSettled: () => {
+        setIsSubmitting(false);
+        onAfterSubmit();
+      },
+    });
+  };
+  const onSubmit = (formData: z.infer<TSchema>) => {
+    setIsSubmitting(true);
+    if (modalMode === "edit" && currentItem) {
+      handleUpdate(formData, currentItem.id);
+    } else if (modalMode === "add") {
+      handleCreate(formData);
+    }
+  };
+  return {
+    form,
+    onSubmit,
+    isSubmitting,
+  };
+};
+
+export default useCrudForm;
